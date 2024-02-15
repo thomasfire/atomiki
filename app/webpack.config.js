@@ -5,7 +5,7 @@ module.exports = {
         atomiki: './src/index.tsx'
     },
     output: {
-        path: path.resolve(__dirname, './static/js'),
+        path: path.resolve(__dirname, '../src/main/resources/static'),
         filename: '[name].bundle.js'
     },
     module: {
@@ -22,6 +22,10 @@ module.exports = {
             {
                 test: /\.svg$/,
                 loader: 'svg-inline-loader'
+            },
+            {
+                test: /\.(png|jpe?g|gif)$/i,
+                use: 'file-loader',
             },
             {
                 test: /\.(js|jsx)$/,
