@@ -1,4 +1,9 @@
 package tomihi.atomiki.game;
 
-public class Movement {
+import lombok.Data;
+
+@Data
+public class Movement implements Vector {
+    int x = 0;
+    int y = 0;
 }
