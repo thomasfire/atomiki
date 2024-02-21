@@ -7,9 +7,9 @@ import java.util.List;
 
 @Data
 public class Trace {
-    List<Movement> trace = new ArrayList<>();
+    private List<Coords> trace = new ArrayList<>();
 
-    public void addMovement(Movement movement) {
+    public void addMovement(Coords movement) {
         trace.add(movement);
     }
 

@@ -7,5 +7,9 @@ public interface Space {
         return false;
     };
 
+    default Electron createElectron() {
+        return null;
+    }
+
     boolean canPlaceAnotherObject();
 }
