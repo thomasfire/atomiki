@@ -69,7 +69,7 @@ public class Field {
     /**
      * Accepts coordinates in shifted way, i.e. with -1 or overflown
      */
-    public Trace processShoot(Coords shootCords) throws WrongActionForCoords {
+    public MoveResult processShoot(Coords shootCords) throws WrongActionForCoords {
         if (shootCords.getX() < -1 || shootCords.getY() < -1
                 || shootCords.getX() > this.gameSettings.getFieldSize() + 1
                 || shootCords.getY() > this.gameSettings.getFieldSize() + 1) {
@@ -93,7 +93,7 @@ public class Field {
             bufferSpace = this.atCoords(coords);
         }
 
-        return trace;
+        return new MoveResult(trace, this.atCoords(coords).canRegisterElectronDeath());
     }
 
 

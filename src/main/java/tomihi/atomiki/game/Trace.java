@@ -13,7 +13,7 @@ public class Trace {
         trace.add(movement);
     }
 
-    public Vector lastPoint() {
+    public Coords lastPoint() {
         return trace.getLast();
     }
 }
