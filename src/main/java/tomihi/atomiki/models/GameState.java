@@ -4,5 +4,10 @@ import lombok.Data;
 
 @Data
 public class GameState {
-    // TODO
+    private User owner;
+    private User competitor;
+
+
+
+
 }

@@ -38,14 +38,62 @@ public class Game {
             target.setStatus(Status.FINISHED);
         }
 
-        target.getLog().addToLog(result.trace.getTrace().getFirst(), result.lastCoordTraceble ? result.trace.lastPoint() : null);
+        target.getMovesLog().addToLog(result.trace.getTrace().getFirst(), result.lastCoordTraceble ? result.trace.lastPoint() : null);
 
         movesCounter++;
 
         return result;
     }
 
-    // TODO set atoms and other stuff
+    public Coords setAtom(Coords coords, boolean isOwner) throws ImpossibleAtomLocationException, AtomsOverflowException {
+        UserGame target = this.getTargetGame(isOwner);
+        if (target.getStatus() != Status.SETTING) {
+            throw new IllegalStateException();
+        }
 
+        target.getField().setAtom(coords);
+        return coords;
+    }
 
+    public Coords markAtom(Coords coords, boolean isOwner) throws AtomsOverflowException {
+        UserGame target = this.getTargetGame(isOwner);
+        if (target.getStatus() != Status.STARTED) {
+            throw new IllegalStateException();
+        }
+
+        target.getCompetitorMarks().addMark(coords);
+        return coords;
+    }
+
+    public Coords unmarkAtom(Coords coords, boolean isOwner) {
+        UserGame target = this.getTargetGame(isOwner);
+        if (target.getStatus() != Status.STARTED) {
+            throw new IllegalStateException();
+        }
+
+        target.getCompetitorMarks().removeMark(coords);
+        return coords;
+    }
+
+    public void startGame(boolean isOwner) {
+        UserGame target = this.getTargetGame(isOwner);
+        if (target.getStatus() != Status.SETTING) {
+            throw new IllegalStateException();
+        }
+        target.setStatus(Status.STARTED);
+    }
+
+    public void finishGame(boolean isOwner) {
+        UserGame target = this.getTargetGame(isOwner);
+        if (target.getStatus() != Status.STARTED) {
+            throw new IllegalStateException();
+        }
+        target.setStatus(Status.FINISHED);
+    }
+
+    public MovesLog getMovesLog(boolean isOwner) {
+        UserGame target = this.getTargetGame(isOwner);
+        return target.getMovesLog();
+
+    }
 }

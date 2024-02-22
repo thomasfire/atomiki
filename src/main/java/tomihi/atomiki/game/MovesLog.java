@@ -1,8 +1,6 @@
 package tomihi.atomiki.game;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,7 +9,7 @@ import java.util.Set;
 
 
 @Data
-public class Log {
+public class MovesLog {
     List<LogEntry> logEntries = new ArrayList<>();
 
     Set<Coords> coordsSet = new HashSet<>();
