@@ -8,12 +8,19 @@ public class Game {
     private UserGame owner;
     private UserGame competitor;
 
-    int movesCounter = 0;
+    private int movesCounter = 0;
 
     public Game(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         this.owner = new UserGame(this.gameSettings);
         this.competitor = new UserGame(this.gameSettings);
+    }
+
+    public Game(GameSettings gameSettings, UserGame owner, UserGame competitor, int movesCounter) {
+        this.gameSettings = gameSettings;
+        this.owner = owner;
+        this.competitor = competitor;
+        this.movesCounter = movesCounter;
     }
 
     private UserGame getTargetGame(boolean isOwner) {

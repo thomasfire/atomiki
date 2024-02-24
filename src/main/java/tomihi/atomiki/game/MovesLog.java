@@ -18,7 +18,6 @@ public class MovesLog {
         if (coordsSet.contains(start))
             throw new WrongActionForCoords("Already moved");
         logEntries.add(new LogEntry(start, end));
-
     }
 
     public boolean hadMoved(Coords coords) {

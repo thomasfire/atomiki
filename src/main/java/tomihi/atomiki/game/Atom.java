@@ -10,4 +10,9 @@ public class Atom implements Space {
     public boolean canPlaceAnotherObject() {
         return false;
     }
+
+    @Override
+    public boolean isAtom() {
+        return true;
+    }
 }

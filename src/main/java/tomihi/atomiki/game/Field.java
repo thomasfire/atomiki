@@ -1,7 +1,10 @@
 package tomihi.atomiki.game;
 
 
+import lombok.Getter;
+
 public class Field {
+    @Getter
     Space[][] field;
     final GameSettings gameSettings;
     private int atomsCount = 0;
@@ -26,9 +29,9 @@ public class Field {
     }
 
     /**
-     * Accepts coordinates in shifted way, i.e. stripped from guns.
+     * Accepts coordinates in inner way, i.e. stripped from guns.
      */
-    public void setAtom(Vector atomCoords) throws ImpossibleAtomLocationException, AtomsOverflowException {
+    public void setAtom(Coords atomCoords) throws ImpossibleAtomLocationException, AtomsOverflowException {
         if (atomCoords.getX() < 0
                 || atomCoords.getY() < 0
                 || atomCoords.getX() >= this.gameSettings.getFieldSize()
@@ -96,5 +99,12 @@ public class Field {
         return new MoveResult(trace, this.atCoords(coords).canRegisterElectronDeath());
     }
 
+    public static Coords fullToInnerCoords(Coords coords) {
+        return new Coords(coords.getX() - 1, coords.getY() - 1);
+    }
+
+    public static Coords innerToFullCoords(Coords coords) {
+        return new Coords(coords.getX() + 1, coords.getY() + 1);
+    }
 
 }
