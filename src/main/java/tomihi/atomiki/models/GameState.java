@@ -1,9 +1,11 @@
 package tomihi.atomiki.models;
 
 import lombok.Data;
+import org.springframework.data.redis.core.RedisHash;
 import tomihi.atomiki.game.*;
 
 @Data
+@RedisHash("Games")
 public class GameState {
     private String id;
     private User owner;
