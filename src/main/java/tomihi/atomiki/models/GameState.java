@@ -8,8 +8,8 @@ import tomihi.atomiki.game.*;
 @RedisHash("Games")
 public class GameState {
     private String id;
-    private User owner;
-    private User competitor;
+    private String ownerId;
+    private String competitorId;
     private GameSettings gameSettings;
     private CompressedUserGame ownerGame;
     private CompressedUserGame competitorGame;
@@ -23,13 +23,21 @@ public class GameState {
                 this.movesCounter);
     }
 
-    public GameState(String id, User owner, User competitor, Game game) {
+    public GameState(String id, String ownerId, String competitorId, Game game) {
         this.id = id;
-        this.owner = owner;
-        this.competitor = competitor;
+        this.ownerId = ownerId;
+        this.competitorId = competitorId;
         this.gameSettings = game.getGameSettings();
         this.ownerGame = new CompressedUserGame(game.getOwner());
         this.competitorGame = new CompressedUserGame(game.getCompetitor());
         this.movesCounter = game.getMovesCounter();
+    }
+
+    public GameState(String id, String ownerId) {
+        this.id = id;
+        this.ownerId = ownerId;
+    }
+
+    public GameState() {
     }
 }

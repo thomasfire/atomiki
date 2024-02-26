@@ -1,9 +1,15 @@
 package tomihi.atomiki.dto;
 
 import lombok.Data;
+import tomihi.atomiki.game.GameSettings;
 
 @Data
 public class GameSettingsDTO {
-    // this should represent game settings needed for the display
-    // also should include credentials, but the GameSettings itself should not have them
+    private CredentialDTO credentials;
+    private GameSettings settings;
+
+    public GameSettingsDTO(CredentialDTO credentials, GameSettings settings) {
+        this.credentials = credentials;
+        this.settings = settings;
+    }
 }

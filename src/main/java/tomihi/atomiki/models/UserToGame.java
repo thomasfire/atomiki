@@ -8,6 +8,11 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash("UserToGame")
 public class UserToGame {
     @Id
-    private User id;
+    private String id;
     private String gameId;
+
+    public UserToGame(String id, String gameId) {
+        this.id = id;
+        this.gameId = gameId;
+    }
 }

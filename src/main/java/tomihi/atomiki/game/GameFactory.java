@@ -13,4 +13,11 @@ public class GameFactory {
 
         return new Game(VARIANTS[id]);
     }
+
+    public static boolean isValidSettings(GameSettings gameSettings) {
+        for (GameSettings settings : VARIANTS) {
+            if (settings.equals(gameSettings)) return true;
+        }
+        return false;
+    }
 }

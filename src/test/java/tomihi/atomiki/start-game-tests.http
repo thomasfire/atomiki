@@ -1,0 +1,70 @@
+### Test get settings
+GET http://localhost:8080/getAvailableSettings
+
+### Test creation of the game
+POST http://localhost:8080/create
+Accept: application/json
+
+> {%
+    client.global.set("ownerId", response.body.userId);
+    client.global.set("gameId", response.body.gameId);
+%}
+
+### Test login
+GET http://localhost:8080/login/{{ownerId}}/{{gameId}}
+
+### Test not successful login
+GET http://localhost:8080/login/ABOBA/{{gameId}}
+
+### Test join
+GET http://localhost:8080/join/{{gameId}}
+
+> {%
+    client.global.set("competitorId", response.body.credentials.userId);
+%}
+
+### Test good settings
+POST http://localhost:8080/set
+Content-Type: application/json
+
+{
+  "credentials": {
+    "userId": "{{ownerId}}",
+    "gameId": "{{gameId}}"
+  },
+  "settings": {
+    "atomsMaxCount": 4,
+    "fieldSize": 8
+  }
+}
+
+
+### Test bad settings
+POST http://localhost:8080/set
+Content-Type: application/json
+
+{
+  "credentials": {
+    "userId": "{{ownerId}}",
+    "gameId": "{{gameId}}"
+  },
+  "settings": {
+    "atomsMaxCount": 8,
+    "fieldSize": 4
+  }
+}
+
+### Test competitor set settings
+POST http://localhost:8080/set
+Content-Type: application/json
+
+{
+  "credentials": {
+    "userId": "{{competitorId}}",
+    "gameId": "{{gameId}}"
+  },
+  "settings": {
+    "atomsMaxCount": 4,
+    "fieldSize": 8
+  }
+}
