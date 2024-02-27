@@ -33,6 +33,16 @@ public class GameState {
         this.movesCounter = game.getMovesCounter();
     }
 
+    public GameState(GameState previous, Game game) {
+        this.id = previous.getId();
+        this.ownerId = previous.getOwnerId();
+        this.competitorId = previous.getCompetitorId();
+        this.gameSettings = game.getGameSettings();
+        this.ownerGame = new CompressedUserGame(game.getOwner());
+        this.competitorGame = new CompressedUserGame(game.getCompetitor());
+        this.movesCounter = game.getMovesCounter();
+    }
+
     public GameState(String id, String ownerId) {
         this.id = id;
         this.ownerId = ownerId;

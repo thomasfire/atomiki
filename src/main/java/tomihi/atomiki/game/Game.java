@@ -98,9 +98,20 @@ public class Game {
         target.setStatus(Status.FINISHED);
     }
 
+    public boolean hasBothFinished() {
+        return this.owner.getStatus() == Status.FINISHED && this.competitor.getStatus() == Status.FINISHED;
+    }
+
     public MovesLog getMovesLog(boolean isOwner) {
         UserGame target = this.getTargetGame(isOwner);
         return target.getMovesLog();
 
+    }
+
+    public GameResults getGameResults() {
+        if (!this.hasBothFinished()) throw new IllegalStateException();
+
+        // TODO
+        return null;
     }
 }
