@@ -3,13 +3,12 @@ package tomihi.atomiki.game;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public class Gun implements Space {
-    @Getter
     @Setter
     private Direction direction;
 
-    @Getter
-    private int ttl;
+    private final int ttl;
 
     public Gun(Direction direction, int ttl) {
         this.direction = direction;

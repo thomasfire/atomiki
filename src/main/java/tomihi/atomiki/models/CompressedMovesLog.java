@@ -5,7 +5,6 @@ import tomihi.atomiki.game.LogEntry;
 import tomihi.atomiki.game.MovesLog;
 import tomihi.atomiki.game.WrongActionForCoords;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

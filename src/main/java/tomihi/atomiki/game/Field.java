@@ -35,7 +35,7 @@ public class Field {
         if (atomCoords.getX() < 0
                 || atomCoords.getY() < 0
                 || atomCoords.getX() >= this.gameSettings.getFieldSize()
-                || atomCoords.getX() >= this.gameSettings.getFieldSize()) {
+                || atomCoords.getY() >= this.gameSettings.getFieldSize()) {
             throw new ImpossibleAtomLocationException("Coordinates are out of field");
         } else if (atomsCount >= gameSettings.getAtomsMaxCount()) {
             throw new AtomsOverflowException();
@@ -88,7 +88,7 @@ public class Field {
 
         Trace trace = new Trace();
         trace.addMovement(coords);
-        Direction direction = null;
+        Direction direction;
         Space bufferSpace = gun;
         while ((direction = electron.makeMove(bufferSpace)) != Direction.NULL_DIRECTION) {
             coords = coords.addMovement(direction);

@@ -3,12 +3,10 @@ package tomihi.atomiki.game;
 
 import lombok.Getter;
 
+@Getter
 public class Electron {
-    @Getter
     private Direction direction;
 
-
-    @Getter
     private int ttl;
 
     public Electron(int ttl) {

@@ -1,0 +1,41 @@
+
+### Test creation of the game
+POST http://localhost:8080/create
+Accept: application/json
+
+> {%
+    client.global.set("ownerId", response.body.userId);
+    client.global.set("gameId", response.body.gameId);
+    client.assert(response.status === 200);
+%}
+
+### Test join
+GET http://localhost:8080/join/{{gameId}}
+
+> {%
+    client.global.set("competitorId", response.body.credentials.userId);
+    client.assert(response.status === 200);
+%}
+
+### Test good settings
+POST http://localhost:8080/set
+Content-Type: application/json
+
+{
+  "credentials": {
+    "userId": "{{ownerId}}",
+    "gameId": "{{gameId}}"
+  },
+  "settings": {
+    "atomsMaxCount": 4,
+    "fieldSize": 8
+  }
+}
+
+> {%
+    client.assert(response.status === 200);
+%}
+
+### Test webscocket connection
+WEBSOCKET ws://localhost:8080/gs-guide-websocket
+

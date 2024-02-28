@@ -1,11 +1,8 @@
 package tomihi.atomiki.models;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import tomihi.atomiki.game.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static tomihi.atomiki.game.GameResults.extractAtomsFromField;

@@ -1,12 +1,9 @@
 package tomihi.atomiki.game;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 public class Stream implements Space {
-
-    @Getter
-    @Setter
     private Direction direction;
 
     public Stream(Direction direction) {

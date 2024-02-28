@@ -19,12 +19,12 @@ import tomihi.atomiki.repositories.UserToGameRepository;
 // This controller should be responsible for the websocket process in the game
 @Controller
 public class GameSocketController {
-    GameRepository gameRepository;
-    UserToGameRepository userToGameRepository;
+    private final GameRepository gameRepository;
+    private final UserToGameRepository userToGameRepository;
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    public GameSocketController(GameRepository gameRepository, UserToGameRepository userToGameRepository) {
+    public GameSocketController(final GameRepository gameRepository, final UserToGameRepository userToGameRepository) {
         this.gameRepository = gameRepository;
         this.userToGameRepository = userToGameRepository;
     }

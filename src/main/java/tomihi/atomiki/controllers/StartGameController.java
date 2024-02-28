@@ -21,10 +21,10 @@ import java.util.UUID;
 @RequestMapping("/")
 public class StartGameController {
     // there should be repositories and constructor
-    GameRepository gameRepository;
-    UserToGameRepository userToGameRepository;
+    private final GameRepository gameRepository;
+    private final UserToGameRepository userToGameRepository;
 
-    public StartGameController(GameRepository gameRepository, UserToGameRepository userToGameRepository) {
+    public StartGameController(final GameRepository gameRepository, final UserToGameRepository userToGameRepository) {
         this.gameRepository = gameRepository;
         this.userToGameRepository = userToGameRepository;
     }

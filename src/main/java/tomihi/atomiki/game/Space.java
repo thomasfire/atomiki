@@ -5,10 +5,10 @@ public interface Space {
 
     default boolean canRegisterElectronDeath() {
         return false;
-    };
+    }
     default boolean isAtom() {
         return false;
-    };
+    }
 
     default Electron createElectron() {
         return null;

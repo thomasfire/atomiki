@@ -3,10 +3,10 @@ package tomihi.atomiki.models;
 import tomihi.atomiki.game.*;
 
 public class CompressedUserGame {
-    Status status;
-    private CompressedMovesLog movesLog;
-    private CompressedField field;
-    CompetitorMarks competitorMarks;
+    private final Status status;
+    private final CompressedMovesLog movesLog;
+    private final CompressedField field;
+    private final CompetitorMarks competitorMarks;
 
     public CompressedUserGame(UserGame userGame) {
         this.status = userGame.getStatus();
