@@ -111,7 +111,6 @@ public class Game {
     public GameResults getGameResults() {
         if (!this.hasBothFinished()) throw new IllegalStateException();
 
-        // TODO
-        return null;
+        return new GameResults(this);
     }
 }

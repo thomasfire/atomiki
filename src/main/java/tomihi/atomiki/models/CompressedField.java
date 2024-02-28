@@ -8,21 +8,15 @@ import tomihi.atomiki.game.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static tomihi.atomiki.game.GameResults.extractAtomsFromField;
+
 
 @Data
 public class CompressedField {
     private List<Coords> atoms;
 
     public CompressedField(Field field) {
-        this.atoms = new ArrayList<>();
-
-        final Space[][] table = field.getField();
-
-        for (int i = 0; i < table.length; i++) {
-            for (int j = 0; j < table[i].length; j++) {
-                if (table[i][j].isAtom()) this.atoms.add(new Coords(i, j));
-            }
-        }
+        this.atoms = extractAtomsFromField(field);
     }
 
     public Field toField(GameSettings settings) throws ImpossibleAtomLocationException, AtomsOverflowException {
