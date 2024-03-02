@@ -3,11 +3,13 @@ package tomihi.atomiki.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import tomihi.atomiki.dto.*;
 import tomihi.atomiki.game.*;
@@ -45,11 +47,13 @@ public class GameSocketController {
     }
 
     @MessageMapping("/set-own-atoms/{userId}")
-    public void setOwnAtoms(@Payload AtomsSetDTO atomsSetDTO, @Header String userId) throws WrongActionForCoords,
+    public void setOwnAtoms(@Payload AtomsSetDTO atomsSetDTO, @DestinationVariable String userId) throws WrongActionForCoords,
             ImpossibleAtomLocationException, AtomsOverflowException {
         // Verifies userID exists, there is no other atoms, verifies game not started, verifies atoms constraints,
         // saves atoms to the db, sends to owner confirmation (same atoms), sends notification to other user
         final GameState initialState = this.getGameStateFromUserId(userId);
+
+        // TODO init the game
 
         Game game = initialState.toGame();
         final boolean isOwner = initialState.getOwnerId().equals(userId);
@@ -64,14 +68,18 @@ public class GameSocketController {
         final GameState newGameState = new GameState(initialState, game);
         this.gameRepository.save(newGameState);
 
+        System.out.println("set atoms done");
+
         this.simpMessagingTemplate.convertAndSend("/secured/user/" + userId, atomsSetDTO);
         this.simpMessagingTemplate.convertAndSend("/secured/user/" + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_SET,
                         "Competitor set their atoms", null));
+
+        System.out.println("set atoms done 2");
     }
 
     @MessageMapping("/make-move/{userId}")
-    public void makeMovement(@Payload AtomsMovementDTO atomsMovementDTO, @Header String userId) throws WrongActionForCoords,
+    public void makeMovement(@Payload AtomsMovementDTO atomsMovementDTO, @DestinationVariable String userId) throws WrongActionForCoords,
             ImpossibleAtomLocationException, AtomsOverflowException, IllegalMoveException {
         // Verifies:  userID exists, game started, has right to move, no such movement before,
         // processes movement in the game engine, saves to the db and sends the result to the owner, and trace to the competitor
@@ -99,7 +107,7 @@ public class GameSocketController {
     }
 
     @MessageMapping("/mark-atom/{userId}")
-    public void markCompetitorAtom(@Payload AtomsMarkDTO atomsMarkDTO, @Header String userId) throws WrongActionForCoords,
+    public void markCompetitorAtom(@Payload AtomsMarkDTO atomsMarkDTO, @DestinationVariable String userId) throws WrongActionForCoords,
             ImpossibleAtomLocationException, AtomsOverflowException {
         // Verifies:  userID exists, game started, no such mark before, not finished
         // processes mark in the game engine, saves to the db and sends the result to the owner, and trace to the competitor
@@ -124,7 +132,7 @@ public class GameSocketController {
     }
 
     @MessageMapping("/finish/{userId}")
-    public void finishGame(@Header String userId) throws WrongActionForCoords, ImpossibleAtomLocationException, AtomsOverflowException {
+    public void finishGame(@DestinationVariable String userId) throws WrongActionForCoords, ImpossibleAtomLocationException, AtomsOverflowException {
         // Verifies:  userID exists, game started, owner not finished before
         // processes in the game engine, saves to the db, and sends the result to the owner, and notification to the competitor
         // may give the competitor right to move, if it is even.
@@ -149,7 +157,7 @@ public class GameSocketController {
     }
 
     @MessageMapping("/logs/{userId}")
-    public void getLogs(@Header String userId) throws WrongActionForCoords, ImpossibleAtomLocationException, AtomsOverflowException {
+    public void getLogs(@DestinationVariable String userId) throws WrongActionForCoords, ImpossibleAtomLocationException, AtomsOverflowException {
         // Verifies:  userID exists, game started, owner not finished before
         // gets movements from db and forms logs and sends to owner
         final GameState initialState = this.getGameStateFromUserId(userId);

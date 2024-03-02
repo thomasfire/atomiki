@@ -23,6 +23,11 @@ public class GameState {
                 this.movesCounter);
     }
 
+    public void initializeWithSettings(GameSettings settings) {
+        this.setGameSettings(settings);
+
+    }
+
     public GameState(String id, String ownerId, String competitorId, Game game) {
         this.id = id;
         this.ownerId = ownerId;
