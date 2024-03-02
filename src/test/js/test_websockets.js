@@ -1,6 +1,5 @@
 let SockJS = require("sockjs-client");
 let Stomp = require("stompjs");
-//const fetch = require('node-fetch');
 
 const baseURL = "http://localhost:8080"
 
