@@ -29,7 +29,7 @@ public class GameResults {
 
         for (int i = 0; i < table.length; i++) {
             for (int j = 0; j < table[i].length; j++) {
-                if (table[i][j].isAtom()) atoms.add(new Coords(i, j));
+                if (table[i][j] != null && table[i][j].isAtom()) atoms.add(new Coords(i, j));
             }
         }
         return atoms;

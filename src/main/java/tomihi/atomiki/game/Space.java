@@ -14,5 +14,5 @@ public interface Space {
         return null;
     }
 
-    boolean canPlaceAnotherObject();
+    boolean canPlaceAnotherObject(Space other);
 }

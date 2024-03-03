@@ -18,7 +18,7 @@ public class Stream implements Space {
     }
 
     @Override
-    public boolean canPlaceAnotherObject() {
+    public boolean canPlaceAnotherObject(Space other) {
         return false;
     }
 }

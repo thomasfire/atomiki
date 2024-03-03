@@ -50,7 +50,7 @@ public class StartGameController {
         GameState existingState = this.gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        if (existingState.getCompetitorGame() != null) {
+        if (existingState.getCompetitorId() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
@@ -98,7 +98,7 @@ public class StartGameController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid settings");
         }
 
-        existingState.setGameSettings(gameSettingsDTO.getSettings());
+        existingState.initializeWithSettings(gameSettingsDTO.getSettings());
         this.gameRepository.save(existingState);
 
         return new GameSettingsDTO(gameSettingsDTO.getCredentials(), existingState.getGameSettings());

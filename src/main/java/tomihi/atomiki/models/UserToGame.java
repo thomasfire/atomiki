@@ -15,4 +15,7 @@ public class UserToGame {
         this.id = id;
         this.gameId = gameId;
     }
+
+    public UserToGame() {
+    }
 }

@@ -9,6 +9,13 @@ public class Field {
     final GameSettings gameSettings;
     private int atomsCount = 0;
 
+    final private static Space[][] ATOM_STRUCTURE = new Space[][]{
+            new Space[]{new AtomShield(), new Stream(Direction.DIRECTION_UP), new AtomShield()},
+            new Space[]{new Stream(Direction.DIRECTION_LEFT), new Atom(), new Stream(Direction.DIRECTION_RIGHT)},
+            new Space[]{new AtomShield(), new Stream(Direction.DIRECTION_DOWN), new AtomShield()},
+    };
+
+
     public Field(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         this.field = new Space[gameSettings.getFieldSize() + 2][gameSettings.getFieldSize() + 2];
@@ -42,7 +49,7 @@ public class Field {
         } else {
             for (int i = 0; i <= 2; i++) {
                 for (int j = 0; j <= 2; j++) {
-                    if (!this.field[atomCoords.getX() + i][atomCoords.getY() + j].canPlaceAnotherObject())
+                    if (!this.field[atomCoords.getX() + i][atomCoords.getY() + j].canPlaceAnotherObject(ATOM_STRUCTURE[i][j]))
                         throw new ImpossibleAtomLocationException("Another atom is too close");
                 }
             }
@@ -50,16 +57,11 @@ public class Field {
 
         atomsCount++;
 
-        this.field[atomCoords.getX() + 1][atomCoords.getY() + 1] = new Atom();
-        this.field[atomCoords.getX() + 1][atomCoords.getY()] = new Stream(Direction.DIRECTION_UP);
-        this.field[atomCoords.getX() + 1][atomCoords.getY() + 2] = new Stream(Direction.DIRECTION_DOWN);
-        this.field[atomCoords.getX()][atomCoords.getY() + 1] = new Stream(Direction.DIRECTION_LEFT);
-        this.field[atomCoords.getX() + 2][atomCoords.getY() + 1] = new Stream(Direction.DIRECTION_RIGHT);
-
-        this.field[atomCoords.getX() + 2][atomCoords.getY() + 2] = new AtomShield();
-        this.field[atomCoords.getX()][atomCoords.getY()] = new AtomShield();
-        this.field[atomCoords.getX() + 2][atomCoords.getY()] = new AtomShield();
-        this.field[atomCoords.getX()][atomCoords.getY() + 2] = new AtomShield();
+        for (int i = 0; i <= 2; i++) {
+            for (int j = 0; j <= 2; j++) {
+                this.field[atomCoords.getX() + i][atomCoords.getY() + j] = ATOM_STRUCTURE[i][j];
+            }
+        }
     }
 
     private Space atCoords(Coords coords) {
@@ -90,7 +92,8 @@ public class Field {
         trace.addMovement(coords);
         Direction direction;
         Space bufferSpace = gun;
-        while ((direction = electron.makeMove(bufferSpace)) != Direction.NULL_DIRECTION) {
+        while (bufferSpace != null && (direction = electron.makeMove(bufferSpace)) != Direction.NULL_DIRECTION) {
+            System.out.println(direction);
             coords = coords.addMovement(direction);
             trace.addMovement(coords);
             bufferSpace = this.atCoords(coords);

@@ -10,9 +10,12 @@ import java.util.Set;
 
 @Data
 public class MovesLog {
-    List<LogEntry> logEntries = new ArrayList<>();
+    private List<LogEntry> logEntries = new ArrayList<>();
 
-    Set<Coords> coordsSet = new HashSet<>();
+    private Set<Coords> coordsSet = new HashSet<>();
+
+    public MovesLog() {
+    }
 
     public void addToLog(Coords start, Coords end) throws WrongActionForCoords {
         if (coordsSet.contains(start))

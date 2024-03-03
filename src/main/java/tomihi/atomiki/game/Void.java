@@ -7,7 +7,7 @@ public class Void implements Space {
     }
 
     @Override
-    public boolean canPlaceAnotherObject() {
+    public boolean canPlaceAnotherObject(Space other) {
         return true;
     }
 }

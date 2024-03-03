@@ -1,18 +1,26 @@
 package tomihi.atomiki.models;
 
+import lombok.Data;
+import org.springframework.lang.NonNull;
 import tomihi.atomiki.game.*;
 
+@Data
 public class CompressedUserGame {
-    private final Status status;
-    private final CompressedMovesLog movesLog;
-    private final CompressedField field;
-    private final CompetitorMarks competitorMarks;
+    private Status status;
+    @NonNull
+    private CompressedMovesLog movesLog;
+    @NonNull
+    private CompressedField field;
+    private CompetitorMarks competitorMarks;
 
     public CompressedUserGame(UserGame userGame) {
         this.status = userGame.getStatus();
         this.movesLog = new CompressedMovesLog(userGame.getMovesLog());
         this.field = new CompressedField(userGame.getField());
         this.competitorMarks = userGame.getCompetitorMarks();
+    }
+
+    public CompressedUserGame() {
     }
 
     public UserGame toUserGame(GameSettings gameSettings) throws WrongActionForCoords, ImpossibleAtomLocationException, AtomsOverflowException {

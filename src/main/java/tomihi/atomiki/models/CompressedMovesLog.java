@@ -5,11 +5,16 @@ import tomihi.atomiki.game.LogEntry;
 import tomihi.atomiki.game.MovesLog;
 import tomihi.atomiki.game.WrongActionForCoords;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class CompressedMovesLog {
-    List<LogEntry> logEntries;
+    private List<LogEntry> logEntries = new ArrayList<>();
+    private int fantomData = 42;
+
+    public CompressedMovesLog() {
+    }
 
     public CompressedMovesLog(MovesLog movesLog) {
         this.logEntries = movesLog.getLogEntries();

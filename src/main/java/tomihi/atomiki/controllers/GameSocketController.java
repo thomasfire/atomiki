@@ -4,12 +4,10 @@ package tomihi.atomiki.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import tomihi.atomiki.dto.*;
 import tomihi.atomiki.game.*;
@@ -53,11 +51,9 @@ public class GameSocketController {
         // saves atoms to the db, sends to owner confirmation (same atoms), sends notification to other user
         final GameState initialState = this.getGameStateFromUserId(userId);
 
-        // TODO init the game
-
         Game game = initialState.toGame();
         final boolean isOwner = initialState.getOwnerId().equals(userId);
-        final String otherUser = isOwner ? initialState.getOwnerId() : initialState.getCompetitorId();
+        final String otherUser = initialState.getOtherUser(isOwner);
 
         for (Coords atom : atomsSetDTO.getCoordsList()) {
             game.setAtom(atom, isOwner);
@@ -68,14 +64,10 @@ public class GameSocketController {
         final GameState newGameState = new GameState(initialState, game);
         this.gameRepository.save(newGameState);
 
-        System.out.println("set atoms done");
-
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + userId, atomsSetDTO);
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + otherUser,
+        this.simpMessagingTemplate.convertAndSend("/game/" + userId , atomsSetDTO);
+        this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_SET,
                         "Competitor set their atoms", null));
-
-        System.out.println("set atoms done 2");
     }
 
     @MessageMapping("/make-move/{userId}")
@@ -87,9 +79,9 @@ public class GameSocketController {
 
         Game game = initialState.toGame();
         final boolean isOwner = initialState.getOwnerId().equals(userId);
-        final String otherUser = isOwner ? initialState.getOwnerId() : initialState.getCompetitorId();
+        final String otherUser = initialState.getOtherUser(isOwner);
 
-        MoveResult moveResult = game.makeMove(atomsMovementDTO.getCoords(), isOwner);
+        MoveResult moveResult = game.makeMove(atomsMovementDTO.getCoords(), isOwner); // TODO fix me
 
         LogEntry logEntry = game.getMovesLog(isOwner).getLogEntries().getLast();
         Trace trace = moveResult.getTrace();
@@ -100,8 +92,8 @@ public class GameSocketController {
         // Rick and Dick were about to get their salary.
         // Unfortunately, the counting house messed everything up.
         // So, Dick got Rick's salary, and Rick got Dick's.
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + userId, logEntry);
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + otherUser,
+        this.simpMessagingTemplate.convertAndSend("/game/" + userId, logEntry);
+        this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_MOVED,
                         "Competitor made move", trace));
     }
@@ -114,7 +106,7 @@ public class GameSocketController {
         final GameState initialState = this.getGameStateFromUserId(userId);
         Game game = initialState.toGame();
         final boolean isOwner = initialState.getOwnerId().equals(userId);
-        final String otherUser = isOwner ? initialState.getOwnerId() : initialState.getCompetitorId();
+        final String otherUser = initialState.getOtherUser(isOwner);
 
         if (atomsMarkDTO.isMark()) {
             game.markAtom(atomsMarkDTO.getCoords(), isOwner);
@@ -125,8 +117,8 @@ public class GameSocketController {
         final GameState newGameState = new GameState(initialState, game);
         this.gameRepository.save(newGameState);
 
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + userId, atomsMarkDTO);
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + otherUser,
+        this.simpMessagingTemplate.convertAndSend("/game/" + userId, atomsMarkDTO);
+        this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_MARKED,
                         "Competitor marked the atom", atomsMarkDTO));
     }
@@ -139,7 +131,7 @@ public class GameSocketController {
         final GameState initialState = this.getGameStateFromUserId(userId);
         Game game = initialState.toGame();
         final boolean isOwner = initialState.getOwnerId().equals(userId);
-        final String otherUser = isOwner ? initialState.getOwnerId() : initialState.getCompetitorId();
+        final String otherUser = initialState.getOtherUser(isOwner);
 
         game.finishGame(isOwner);
 
@@ -148,10 +140,10 @@ public class GameSocketController {
 
         GameResults gameResults = game.hasBothFinished() ? game.getGameResults() : null;
 
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + userId,
+        this.simpMessagingTemplate.convertAndSend("/game/" + userId,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.OWNER_FINISHED,
                         "Competitor finished the game", gameResults));
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + otherUser,
+        this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_FINISHED,
                         "Competitor finished the game", gameResults));
     }
@@ -164,7 +156,7 @@ public class GameSocketController {
         Game game = initialState.toGame();
         final boolean isOwner = initialState.getOwnerId().equals(userId);
 
-        this.simpMessagingTemplate.convertAndSend("/secured/user/" + userId, game.getMovesLog(isOwner).getLogEntries());
+        this.simpMessagingTemplate.convertAndSend("/notifications/" + userId, game.getMovesLog(isOwner).getLogEntries());
     }
 
     // TODO also error handler somewhere here

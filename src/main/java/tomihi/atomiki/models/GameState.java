@@ -25,7 +25,14 @@ public class GameState {
 
     public void initializeWithSettings(GameSettings settings) {
         this.setGameSettings(settings);
+        UserGame ownerGame = new UserGame(this.getGameSettings());
+        UserGame competitorGame = new UserGame(this.getGameSettings());
+        this.setOwnerGame(new CompressedUserGame(ownerGame));
+        this.setCompetitorGame(new CompressedUserGame(competitorGame));
+    }
 
+    public String getOtherUser(boolean isOwner) {
+        return isOwner ? this.competitorId : this.ownerId;
     }
 
     public GameState(String id, String ownerId, String competitorId, Game game) {
@@ -51,6 +58,7 @@ public class GameState {
     public GameState(String id, String ownerId) {
         this.id = id;
         this.ownerId = ownerId;
+        this.movesCounter = 0;
     }
 
     public GameState() {

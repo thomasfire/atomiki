@@ -3,6 +3,7 @@ package tomihi.atomiki.models;
 import lombok.Data;
 import tomihi.atomiki.game.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static tomihi.atomiki.game.GameResults.extractAtomsFromField;
@@ -10,10 +11,14 @@ import static tomihi.atomiki.game.GameResults.extractAtomsFromField;
 
 @Data
 public class CompressedField {
-    private List<Coords> atoms;
+    private List<Coords> atoms = new ArrayList<>();
+    private int fantomData = 42;
 
     public CompressedField(Field field) {
         this.atoms = extractAtomsFromField(field);
+    }
+
+    public CompressedField() {
     }
 
     public Field toField(GameSettings settings) throws ImpossibleAtomLocationException, AtomsOverflowException {
