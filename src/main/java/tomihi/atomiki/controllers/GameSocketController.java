@@ -81,7 +81,7 @@ public class GameSocketController {
         final boolean isOwner = initialState.getOwnerId().equals(userId);
         final String otherUser = initialState.getOtherUser(isOwner);
 
-        MoveResult moveResult = game.makeMove(atomsMovementDTO.getCoords(), isOwner); // TODO fix me
+        MoveResult moveResult = game.makeMove(atomsMovementDTO.getCoords(), isOwner);
 
         LogEntry logEntry = game.getMovesLog(isOwner).getLogEntries().getLast();
         Trace trace = moveResult.getTrace();
