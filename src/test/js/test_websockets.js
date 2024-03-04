@@ -17,7 +17,7 @@ async function makeRequest(endpoint, method, body) {
 }
 
 async function delayedExecution(callback, ms_wait) {
-    return new Promise((resolve, reject) => setTimeout(() => {
+    return new Promise((resolve, _reject) => setTimeout(() => {
         callback();
         resolve("done")
     }, ms_wait));
@@ -115,10 +115,36 @@ async function main() {
 
         stompClient.send("/ws/make-move/"+ownerId, {}, JSON.stringify({
             coords: {
-                x: 5,
+                x: 4,
                 y: -1
             }
         }));
+        await delayedExecution(() => {
+            assert.deepEqual(ownerGame.at(-1).startPoint, {x: 4, y: -1});
+            assert.deepEqual(ownerGame.at(-1).endPoint, {x: 8, y: 1});
+            assert.strictEqual(competitorNotifications.at(-1).type, "COMPETITOR_MOVED")
+            assert.deepEqual(competitorNotifications.at(-1).payload.trace.at(0), {x: 4, y: -1});
+            assert.deepEqual(competitorNotifications.at(-1).payload.trace.at(-1), {x: 8, y: 1});
+            assert.deepEqual(competitorNotifications.at(-1).payload, {"trace":[{"x":4,"y":-1},{"x":4,"y":0},{"x":4,"y":1},{"x":5,"y":1},{"x":6,"y":1},{"x":7,"y":1},{"x":8,"y":1}]});
+        }, 100);
+        console.info("OWNER MADE MOVE OK");
+
+        stompClient.send("/ws/make-move/"+competitorId, {}, JSON.stringify({
+            coords: {
+                x: 4,
+                y: 8
+            }
+        }));
+        await delayedExecution(() => {
+            assert.deepEqual(competitorGame.at(-1).startPoint, {x: 4, y: 8});
+            assert.deepEqual(competitorGame.at(-1).endPoint, null);
+            assert.strictEqual(ownerNotifications.at(-1).type, "COMPETITOR_MOVED")
+            assert.deepEqual(ownerNotifications.at(-1).payload.trace.at(0), {x: 4, y: 8});
+            assert.deepEqual(ownerNotifications.at(-1).payload.trace.at(-1), {x: 3, y: 5});
+            assert.deepEqual(ownerNotifications.at(-1).payload, {"trace":[{"x":4,"y":8},{"x":4,"y":7},{"x":4,"y":6},{"x":4,"y":5},{"x":3,"y":5}]});
+        }, 100);
+        console.info("COMPETITOR MADE MOVE OK");
+
 
        /* stompClient.disconnect(function () {
             console.log('Disconnected');
