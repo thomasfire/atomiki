@@ -48,3 +48,5 @@ jobs:
         cd src/test/js
         npm install
         npm run test
+    - name: Stop server
+      run: mvn spring-boot:stop
