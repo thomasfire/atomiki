@@ -43,9 +43,8 @@ jobs:
       run: mvn spring-boot:run &
     - name: Wait for app server started
       run: while ! grep -m1 'Started AtomikiApplication' atomiki.log; do sleep 1; done
-    - name: Set up Node for tests
+    - name: Run auto tests on node
       run: |
         cd src/test/js
         npm install
-    - name: Run autotests
-      run: npm run test
+        npm run test
