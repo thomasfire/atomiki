@@ -152,7 +152,7 @@ async function main() {
                         "y": 6
                     }, {"x": 4, "y": 5}, {"x": 3, "y": 5}]
                 });
-            }, 100);
+            }, 150);
             console.info("COMPETITOR MADE MOVE OK");
 
             const OWNER_GUESS = { // this dude is right
@@ -185,7 +185,7 @@ async function main() {
             console.info("OWNER AND COMPETITOR MARKED EACH OTHERS ATOMS");
 
             stompClient.send("/ws/finish/" + ownerId, {}, "");
-            await delayedExecution(() => stompClient.send("/ws/finish/" + competitorId, {}, ""), 100); // TODO fix simultaneous requests
+            await delayedExecution(() => stompClient.send("/ws/finish/" + competitorId, {}, ""), 150); // TODO fix simultaneous requests
 
             const EXPECTED_RESULT = {
                 "ownerAtoms": [{"x": 3, "y": 3}, {"x": 3, "y": 6}, {"x": 6, "y": 3}, {"x": 6, "y": 6}],

@@ -10,8 +10,9 @@
 	</parent>
 	<groupId>tomihi</groupId>
 	<artifactId>atomiki</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-beta</version>
 	<name>atomiki</name>
+	<packaging>jar</packaging>
 	<description> アトミキ - Rework of Atoms The Game - small game, where you find atoms by tracing the electrons. </description>
 	<properties>
 		<java.version>21</java.version>
