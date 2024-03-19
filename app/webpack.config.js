@@ -12,20 +12,29 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
+                use: [
+                    'ts-loader',
+                    {
+                        loader: "webpack-preprocessor-loader",
+                        options: {
+                            debug: false,
+                            directives: {},
+                            params: {
+                                ENV: process.env.NODE_ENV,
+                            },
+                            verbose: false,
+                        }
+                    }
+                ],
                 exclude: /node_modules/,
             },
             {
+                test: /\.(svg|png|jpe?g|gif)$/i,
+                type: 'asset/resource'
+            },
+            {
                 test: /\.css$/i,
-                use: ["style-loader", "css-loader"],
-            },
-            {
-                test: /\.svg$/,
-                loader: 'svg-inline-loader'
-            },
-            {
-                test: /\.(png|jpe?g|gif)$/i,
-                use: 'file-loader',
+                use: ["style-loader", "css-loader", 'postcss-loader'],
             },
             {
                 test: /\.(js|jsx)$/,
