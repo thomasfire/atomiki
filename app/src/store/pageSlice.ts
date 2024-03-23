@@ -10,6 +10,7 @@ export const pageSlice: Slice = createSlice({
     reducers: {
         openPage: (state: PageState, action: {payload: EPage, type: string}) => {
             state.currentPage = action.payload;
+            console.log(action.payload)
         },
     },
 })
