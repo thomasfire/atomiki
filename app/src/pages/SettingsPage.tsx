@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
 import React, {useEffect} from "react";
-import {updateSettings} from "../services/SettingsReceiver";
+import {receiveSettings} from "../services/SettingsReceiver";
 import {GameSettings, isEqualGameSettings} from "../types/transport/GameSettings";
 import {updateAvailableSettings, updateCurrentSettings} from "../store/settingsSlice";
 import {GameStorage} from "../types/game/GameStorage";
@@ -22,7 +22,7 @@ export function SettingsPage() {
     const currentSettings = useSelector((state: GameStorage) => state.settings.currentSettings);
 
     useEffect(() => {
-        updateSettings().then((settings: Array<GameSettings>) => dispatch(updateAvailableSettings(settings)))
+        receiveSettings().then((settings: Array<GameSettings>) => dispatch(updateAvailableSettings(settings)));
     }, [])
 
     return (
@@ -55,7 +55,7 @@ export function SettingsPage() {
                     availableSettings &&
                         <button className={`py-4 px-4 rounded h-min self-center m-1 bg-rose-500 hover:bg-rose-700
                                     col-start-1 row-start-${availableSettings.length + 1}`}
-                        onClick={() => dispatch(openPage(EPage.GamePage))}>Start game</button>
+                        onClick={() => dispatch(openPage(EPage.WaitCompetitorPage))}>Start game</button>
                 }
             </div>
         </div>

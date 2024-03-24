@@ -1,4 +1,3 @@
-let SockJS = require("sockjs-client");
 let Stomp = require("stompjs");
 const assert = require("assert");
 
@@ -58,8 +57,7 @@ async function main() {
     let ownerGame = [];
     let competitorGame = [];
 
-    let socket = new SockJS('http://localhost:8080/ws-guide');
-    stompClient = Stomp.over(socket);
+    let stompClient = Stomp.overWS('ws://localhost:8080/ws-guide');
     stompClient.connect({}, async (frame) => {
             console.log(frame);
             stompClient.subscribe('/game/' + ownerId, (message) => {

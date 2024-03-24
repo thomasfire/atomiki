@@ -1,8 +1,11 @@
 package tomihi.atomiki.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import tomihi.atomiki.dto.CompetitorNotificationDTO;
 import tomihi.atomiki.dto.CredentialDTO;
 import tomihi.atomiki.dto.GameSettingsDTO;
 import tomihi.atomiki.game.GameFactory;
@@ -23,6 +26,8 @@ public class StartGameController {
     // there should be repositories and constructor
     private final GameRepository gameRepository;
     private final UserToGameRepository userToGameRepository;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     public StartGameController(final GameRepository gameRepository, final UserToGameRepository userToGameRepository) {
         this.gameRepository = gameRepository;
@@ -59,6 +64,10 @@ public class StartGameController {
 
         this.userToGameRepository.save(new UserToGame(competitorId, gameId));
         this.gameRepository.save(existingState);
+
+        this.simpMessagingTemplate.convertAndSend("/notifications/" + existingState.getOwnerId(),
+                new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_JOINED,
+                        "Competitor joined the game", null));
 
         return new GameSettingsDTO(new CredentialDTO(competitorId, gameId), existingState.getGameSettings());
     }

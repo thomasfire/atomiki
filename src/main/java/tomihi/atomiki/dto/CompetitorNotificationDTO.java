@@ -6,6 +6,7 @@ import lombok.Data;
 public class CompetitorNotificationDTO {
     public enum NOTIFICATION_TYPES {
         COMPETITOR_SET,
+        COMPETITOR_JOINED,
         COMPETITOR_MARKED,
         COMPETITOR_MOVED,
         COMPETITOR_FINISHED,
