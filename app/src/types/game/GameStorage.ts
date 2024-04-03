@@ -2,6 +2,7 @@ import {PageState} from "./page/PageState";
 import {SettingsState} from "./page/SettingsState";
 import {JoinState} from "./page/JoinState";
 import {CredentialState} from "./page/CredentialState";
+import {ServiceState} from "./page/ServiceState";
 
 
 export interface GameStorage {
@@ -9,4 +10,5 @@ export interface GameStorage {
     settings: SettingsState,
     join: JoinState,
     credential: CredentialState,
+    service: ServiceState,
 }

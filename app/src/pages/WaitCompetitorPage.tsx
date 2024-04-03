@@ -10,6 +10,10 @@ import {GameSettingsDTO} from "../types/transport/GameSettingsDTO";
 import {updateCurrentSettings} from "../store/settingsSlice";
 import {CopyButton} from "../components/CopyButton";
 import {WSService} from "../services/WSService";
+import {NOTIFICATION_TYPES} from "../types/transport/CompetitorNotificationDTO";
+import {openPage} from "../store/pageSlice";
+import {EPage} from "../types/game/page/EPage";
+import {setWSService} from "../store/serviceSlice";
 
 export function WaitCompetitorPage() {
     const dispatch: Dispatch<any> = useDispatch();
@@ -25,6 +29,11 @@ export function WaitCompetitorPage() {
                     dispatch(updateCurrentSettings(settings.settings))
                 });
                 const ws_svc = new WSService(credentials.userId);
+                ws_svc.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (message, payload) => {
+                    console.log(message, payload);
+                    dispatch(openPage(EPage.GamePage));
+                });
+                dispatch(setWSService(ws_svc));
             });
     }, []);
 
