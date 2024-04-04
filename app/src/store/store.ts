@@ -4,6 +4,7 @@ import joinReducer from "./joinSlice";
 import settingsReducer from "./settingsSlice";
 import credentialReducer from "./credentialSlice";
 import serviceReducer from "./credentialSlice";
+import gameReducer from "./gameSlice";
 
 export default configureStore({
     reducer: {
@@ -11,11 +12,13 @@ export default configureStore({
         join: joinReducer,
         settings: settingsReducer,
         credential: credentialReducer,
-        service: serviceReducer
+        service: serviceReducer,
+        game: gameReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware({
         serializableCheck: {
-            ignoredActions: ["service/setWSService"]
+            ignoredActions: ["service/setWSService"],
+            ignoredPaths: ["game.ownerField", "game.competitorField"]
         }
     })
 });

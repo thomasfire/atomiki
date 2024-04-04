@@ -60,6 +60,8 @@ export class WSService implements IWSService{
     }
 
     shutdown() {
+        this.notifications?.unsubscribe();
+        this.game?.unsubscribe();
         this.client.deactivate().then(() => console.log("deactivated"));
     }
 }
