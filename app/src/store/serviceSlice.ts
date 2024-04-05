@@ -17,4 +17,4 @@ export const serviceSlice: Slice = createSlice({
 
 export const { setWSService } = serviceSlice.actions
 
-export default serviceSlice.reducer
+export const serviceReducer = serviceSlice.reducer

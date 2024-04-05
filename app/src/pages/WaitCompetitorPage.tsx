@@ -14,6 +14,7 @@ import {NOTIFICATION_TYPES} from "../types/transport/CompetitorNotificationDTO";
 import {openPage} from "../store/pageSlice";
 import {EPage} from "../types/game/page/EPage";
 import {setWSService} from "../store/serviceSlice";
+import {initializeGame} from "../store/gameSlice";
 
 export function WaitCompetitorPage() {
     const dispatch: Dispatch<any> = useDispatch();
@@ -27,6 +28,7 @@ export function WaitCompetitorPage() {
                 currentSettings && setSettings(currentSettings, credentials).then((settings: GameSettingsDTO) => {
                     dispatch(updateCredentials(settings.credentials))
                     dispatch(updateCurrentSettings(settings.settings))
+                    dispatch(initializeGame(settings.settings));
                 });
                 const ws_svc = new WSService(credentials.userId);
                 ws_svc.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (message, payload) => {

@@ -10,7 +10,6 @@ import {EPage} from "../types/game/page/EPage";
 import {SettingsButton} from "../components/SettingsButton";
 
 
-
 export function SettingsPage() {
     const dispatch: Dispatch<any> = useDispatch();
     const availableSettings = useSelector((state: GameStorage) => state.settings.availableSettings);
@@ -25,7 +24,8 @@ export function SettingsPage() {
             <div className="grid h-min self-center">
                 {
                     availableSettings ? availableSettings.map((settings: GameSettings, index: number) =>
-                            <SettingsButton currentSettings={currentSettings} settings={settings} index={index} key={"game_settings" + index}/>
+                            <SettingsButton currentSettings={currentSettings} settings={settings} index={index}
+                                            key={"game_settings" + index}/>
                         ) :
                         (<div className="bg-blue-500 hover:bg-blue-700 text-white col-start-1 row-start-2
                                         font-bold py-2 px-4 rounded h-min self-center m-3">

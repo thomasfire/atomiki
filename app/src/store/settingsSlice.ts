@@ -20,4 +20,4 @@ export const settingsSlice: Slice = createSlice({
 
 export const {updateAvailableSettings, updateCurrentSettings} = settingsSlice.actions
 
-export default settingsSlice.reducer
+export const settingsReducer = settingsSlice.reducer

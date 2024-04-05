@@ -1,10 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit';
-import pageReducer from "./pageSlice";
-import joinReducer from "./joinSlice";
-import settingsReducer from "./settingsSlice";
-import credentialReducer from "./credentialSlice";
-import serviceReducer from "./credentialSlice";
-import gameReducer from "./gameSlice";
+import {pageReducer} from "./pageSlice";
+import {joinReducer} from "./joinSlice";
+import {settingsReducer} from "./settingsSlice";
+import {credentialReducer} from "./credentialSlice";
+import {serviceReducer} from "./serviceSlice";
+import {gameReducer} from "./gameSlice";
 
 export default configureStore({
     reducer: {

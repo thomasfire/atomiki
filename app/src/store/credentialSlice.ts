@@ -18,4 +18,4 @@ export const credentialSlice: Slice = createSlice({
 
 export const { updateCredentials } = credentialSlice.actions
 
-export default credentialSlice.reducer
+export const credentialReducer = credentialSlice.reducer;

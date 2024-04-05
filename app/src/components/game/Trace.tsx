@@ -1,16 +1,8 @@
 import {Cell} from "../../types/game/view/Cell";
 
-export function Trace(cell: Cell, i: number, j: number) {
+export function Trace(cell: Cell, i: number, j: number, owner: boolean, disabled: boolean) {
     return (
-        <div>
-            {
-                i + " " + j
-            }
-            {
-                cell.circleNo
-            }
-            {cell.direction?.x}
-            {cell.direction?.y}
+        <div className={`${cell.direction?.x && "py-1"} ${cell.direction?.y && "px-1"} bg-emerald-200 rounded`}>
         </div>
     );
 }

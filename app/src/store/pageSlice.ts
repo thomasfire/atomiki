@@ -5,7 +5,7 @@ import {EPage} from "../types/game/page/EPage";
 export const pageSlice: Slice = createSlice({
     name: 'page',
     initialState: {
-        currentPage: EPage.IndexPage
+        currentPage: EPage.TestPage
     },
     reducers: {
         openPage: (state: PageState, action: {payload: EPage, type: string}) => {
@@ -17,4 +17,4 @@ export const pageSlice: Slice = createSlice({
 
 export const { openPage } = pageSlice.actions
 
-export default pageSlice.reducer
+export const pageReducer = pageSlice.reducer

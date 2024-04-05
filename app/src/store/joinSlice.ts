@@ -15,4 +15,4 @@ export const joinSlice: Slice = createSlice({
 
 export const { updateJoinId } = joinSlice.actions
 
-export default joinSlice.reducer
+export const joinReducer = joinSlice.reducer;

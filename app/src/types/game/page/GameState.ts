@@ -4,5 +4,7 @@ import {MovesLog} from "../../transport/MovesLog";
 export interface GameState {
     ownerField: FieldData | null,
     competitorField: FieldData | null,
-    log: MovesLog | null
+    log: MovesLog | null,
+    gameStarted: boolean,
+    gameFinished: boolean,
 }
