@@ -19,6 +19,6 @@ public class Stream implements Space {
 
     @Override
     public boolean canPlaceAnotherObject(Space other) {
-        return false;
+        return other.isAtomShield();
     }
 }

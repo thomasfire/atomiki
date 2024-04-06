@@ -9,9 +9,10 @@ export const gameSlice: Slice = createSlice({
     initialState: {
         ownerField: null,
         competitorField: null,
-        log: null,
         gameStarted: false,
-        gameFinished: false
+        gameFinished: false,
+        otherStarted: false,
+        otherFinished: false,
     },
     reducers: {
         initializeGame: (state: GameState, action: { payload: GameSettings, type: string }) => {
@@ -29,6 +30,12 @@ export const gameSlice: Slice = createSlice({
                 state.gameFinished = true;
             else
                 console.warn("Cannot finish game again")
+        },
+        setOtherStarted: (state: GameState) => {
+            state.otherStarted = true;
+        },
+        setOtherFinished: (state: GameState) => {
+            state.otherFinished = true;
         },
         setOwnAtom: (state: GameState, action: { payload: Vector, type: string }) => {
             if (!state.gameStarted) {
@@ -86,7 +93,8 @@ export const gameSlice: Slice = createSlice({
 
 export const {
     initializeGame, setOwnAtom, setCompetitorAtom,
-    unsetOwnAtom, unsetCompetitorAtom, startGame, finishGame
+    unsetOwnAtom, unsetCompetitorAtom, startGame, finishGame,
+    setOtherStarted, setOtherFinished
 } = gameSlice.actions
 
 export const gameReducer = gameSlice.reducer;

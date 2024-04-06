@@ -11,17 +11,19 @@ export enum NOTIFICATION_TYPES {
     OWNER_FINISHED = 5
 }
 
+export type CompetitorNotificationPayload = null | AtomsMarkDTO | Trace | GameResults;
+
 export interface CompetitorNotificationDTO {
     type: NOTIFICATION_TYPES,
     message: string,
-    payload: null | AtomsMarkDTO | Trace | GameResults
+    payload: CompetitorNotificationPayload
 }
 
 export function JSONToCompetitorNotificationDTO(json: string): CompetitorNotificationDTO {
     const {message, payload, type}: {
         type: "COMPETITOR_SET" | "COMPETITOR_JOINED" | "COMPETITOR_MARKED" | "COMPETITOR_MOVED" | "COMPETITOR_FINISHED" | "OWNER_FINISHED",
         message: string,
-        payload: null | AtomsMarkDTO | Trace | GameResults
+        payload: CompetitorNotificationPayload
     } = JSON.parse(json);
     return {
         message: message, payload: payload,

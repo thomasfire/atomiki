@@ -64,7 +64,7 @@ public class GameSocketController {
         final GameState newGameState = new GameState(initialState, game);
         this.gameRepository.save(newGameState);
 
-        this.simpMessagingTemplate.convertAndSend("/game/" + userId , atomsSetDTO);
+        this.simpMessagingTemplate.convertAndSend("/game/" + userId , new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.ATOM_SET, atomsSetDTO));
         this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_SET,
                         "Competitor set their atoms", null));
@@ -92,7 +92,7 @@ public class GameSocketController {
         // Rick and Dick were about to get their salary.
         // Unfortunately, the counting house messed everything up.
         // So, Dick got Rick's salary, and Rick got Dick's.
-        this.simpMessagingTemplate.convertAndSend("/game/" + userId, logEntry);
+        this.simpMessagingTemplate.convertAndSend("/game/" + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.LOG_ENTRY, logEntry));
         this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_MOVED,
                         "Competitor made move", trace));
@@ -117,7 +117,7 @@ public class GameSocketController {
         final GameState newGameState = new GameState(initialState, game);
         this.gameRepository.save(newGameState);
 
-        this.simpMessagingTemplate.convertAndSend("/game/" + userId, atomsMarkDTO);
+        this.simpMessagingTemplate.convertAndSend("/game/" + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.ATOM_MARK, atomsMarkDTO));
         this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_MARKED,
                         "Competitor marked the atom", atomsMarkDTO));

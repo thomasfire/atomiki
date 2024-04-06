@@ -5,4 +5,9 @@ public class AtomShield extends Void {
     public boolean canPlaceAnotherObject(Space other) {
         return !other.isAtom();
     }
+
+    @Override
+    public boolean isAtomShield() {
+        return true;
+    }
 }

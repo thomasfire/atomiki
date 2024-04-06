@@ -9,6 +9,9 @@ public interface Space {
     default boolean isAtom() {
         return false;
     }
+    default boolean isAtomShield() {
+        return false;
+    }
 
     default Electron createElectron() {
         return null;

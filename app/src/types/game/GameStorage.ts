@@ -4,6 +4,7 @@ import {JoinState} from "./page/JoinState";
 import {CredentialState} from "./page/CredentialState";
 import {ServiceState} from "./page/ServiceState";
 import {GameState} from "./page/GameState";
+import {LogState} from "./page/LogState";
 
 
 export interface GameStorage {
@@ -13,4 +14,5 @@ export interface GameStorage {
     credential: CredentialState,
     service: ServiceState,
     game: GameState,
+    log: LogState,
 }

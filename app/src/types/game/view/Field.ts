@@ -1,6 +1,7 @@
 import {Cell, CellType} from "./Cell";
 import {GameSettings} from "../../transport/GameSettings";
 import {createDown, createLeft, createRight, createUp, Vector} from "../../transport/Vector";
+import {AtomsSetDTO} from "../../transport/AtomsSetDTO";
 
 export class FieldData {
     public cells: Array<Array<Cell>>;
@@ -80,4 +81,15 @@ export class FieldData {
         this.atomCounter--;
     }
 
+    public getAtoms(): AtomsSetDTO {
+        let result: Array<Vector> = [];
+        this.cells.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if (cell.cellType == CellType.ATOM) {
+                    result.push({x: i-1, y: j-1})
+                }
+            })
+        })
+        return {coordsList: result}
+    }
 }

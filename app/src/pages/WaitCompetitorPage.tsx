@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {GameStorage} from "../types/game/GameStorage";
 import {Dispatch} from "@reduxjs/toolkit";
 import {setSettings} from "../services/SettingsReceiver";
@@ -20,23 +20,30 @@ export function WaitCompetitorPage() {
     const dispatch: Dispatch<any> = useDispatch();
     const gameId = useSelector((state: GameStorage) => state.credential.gameID);
     const currentSettings = useSelector((state: GameStorage) => state.settings.currentSettings);
+    const initialized = useRef(false)
     useEffect(() => {
-        CreateGame()
-            .then((credentials: CredentialDTO) => {
-                console.log(credentials)
-                dispatch(updateCredentials(credentials))
-                currentSettings && setSettings(currentSettings, credentials).then((settings: GameSettingsDTO) => {
-                    dispatch(updateCredentials(settings.credentials))
-                    dispatch(updateCurrentSettings(settings.settings))
-                    dispatch(initializeGame(settings.settings));
+        if (!initialized.current) {
+            console.log("useEffect", gameId);
+            initialized.current = true
+            CreateGame()
+                .then((credentials: CredentialDTO) => {
+                    console.log(credentials)
+                    dispatch(updateCredentials(credentials))
+                    currentSettings && setSettings(currentSettings, credentials).then((settings: GameSettingsDTO) => {
+                        dispatch(updateCredentials(settings.credentials))
+                        dispatch(updateCurrentSettings(settings.settings))
+                        dispatch(initializeGame(settings.settings));
+                    });
+                    const ws_svc = new WSService(credentials.userId);
+                    ws_svc.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (message, payload) => {
+                        console.log(message, payload);
+                        dispatch(openPage(EPage.GamePage));
+                    });
+                    ws_svc.Subscribe(dispatch)
+                    dispatch(setWSService(ws_svc));
+
                 });
-                const ws_svc = new WSService(credentials.userId);
-                ws_svc.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (message, payload) => {
-                    console.log(message, payload);
-                    dispatch(openPage(EPage.GamePage));
-                });
-                dispatch(setWSService(ws_svc));
-            });
+        }
     }, []);
 
     return (

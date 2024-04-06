@@ -51,7 +51,8 @@ public class Field {
         for (int i = 0; i <= 2; i++) {
             for (int j = 0; j <= 2; j++) {
                 if (!this.atCoords(atomCoords.addMovement(new Direction(i, j))).canPlaceAnotherObject(ATOM_STRUCTURE[i][j]))
-                    throw new ImpossibleAtomLocationException("Another atom is too close");
+                    throw new ImpossibleAtomLocationException(String.format("Another atom is too close, existing: %d:%d, %d:%d",
+                            i, j, atomCoords.getX(), atomCoords.getY()));
             }
         }
 

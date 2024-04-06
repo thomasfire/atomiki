@@ -100,14 +100,14 @@ async function main() {
 
             await delayedExecution(() => {
                 assert.strictEqual(competitorNotifications.at(-1).type, "COMPETITOR_SET")
-                assert.deepEqual(ownerGame.at(-1), OWNER_COORDS_LIST)
+                assert.deepEqual(ownerGame.at(-1).payload, OWNER_COORDS_LIST)
             }, 100);
             console.info("SET OWNER ATOMS OK");
 
             stompClient.send("/ws/set-own-atoms/" + competitorId, {}, JSON.stringify(COMPETITOR_COORDS_LIST));
             await delayedExecution(() => {
                 assert.strictEqual(ownerNotifications.at(-1).type, "COMPETITOR_SET")
-                assert.deepEqual(competitorGame.at(-1), COMPETITOR_COORDS_LIST)
+                assert.deepEqual(competitorGame.at(-1).payload, COMPETITOR_COORDS_LIST)
             }, 100);
             console.info("SET COMPETITOR ATOMS OK");
 
@@ -118,8 +118,8 @@ async function main() {
                 }
             }));
             await delayedExecution(() => {
-                assert.deepEqual(ownerGame.at(-1).startPoint, {x: 4, y: -1});
-                assert.deepEqual(ownerGame.at(-1).endPoint, {x: 8, y: 1});
+                assert.deepEqual(ownerGame.at(-1).payload.startPoint, {x: 4, y: -1});
+                assert.deepEqual(ownerGame.at(-1).payload.endPoint, {x: 8, y: 1});
                 assert.strictEqual(competitorNotifications.at(-1).type, "COMPETITOR_MOVED")
                 assert.deepEqual(competitorNotifications.at(-1).payload.trace.at(0), {x: 4, y: -1});
                 assert.deepEqual(competitorNotifications.at(-1).payload.trace.at(-1), {x: 8, y: 1});
@@ -139,8 +139,8 @@ async function main() {
                 }
             }));
             await delayedExecution(() => {
-                assert.deepEqual(competitorGame.at(-1).startPoint, {x: 4, y: 8});
-                assert.deepEqual(competitorGame.at(-1).endPoint, null);
+                assert.deepEqual(competitorGame.at(-1).payload.startPoint, {x: 4, y: 8});
+                assert.deepEqual(competitorGame.at(-1).payload.endPoint, null);
                 assert.strictEqual(ownerNotifications.at(-1).type, "COMPETITOR_MOVED")
                 assert.deepEqual(ownerNotifications.at(-1).payload.trace.at(0), {x: 4, y: 8});
                 assert.deepEqual(ownerNotifications.at(-1).payload.trace.at(-1), {x: 3, y: 5});
@@ -172,8 +172,8 @@ async function main() {
             stompClient.send("/ws/mark-atom/" + competitorId, {}, JSON.stringify(COMPETITOR_GUESS));
 
             await delayedExecution(() => {
-                assert.deepEqual(ownerGame.at(-1), OWNER_GUESS);
-                assert.deepEqual(competitorGame.at(-1), COMPETITOR_GUESS);
+                assert.deepEqual(ownerGame.at(-1).payload, OWNER_GUESS);
+                assert.deepEqual(competitorGame.at(-1).payload, COMPETITOR_GUESS);
                 assert.strictEqual(ownerNotifications.at(-1).type, "COMPETITOR_MARKED")
                 assert.strictEqual(competitorNotifications.at(-1).type, "COMPETITOR_MARKED")
                 // basically they just exchanged each other's guess info
