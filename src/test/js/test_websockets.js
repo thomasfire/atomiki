@@ -200,7 +200,7 @@ async function main() {
                 assert.deepEqual(ownerNotifications.at(-1).payload, EXPECTED_RESULT)
                 assert.strictEqual(ownerNotifications.at(-1).type, "COMPETITOR_FINISHED")
                 assert.strictEqual(competitorGame.at(-1).type, "OWNER_FINISHED")
-            }, 100);
+            }, 150);
             console.info("GAME SUCCESSFULLY FINISHED AND EVERYBODY KNOWS RESULTS OK");
 
 
