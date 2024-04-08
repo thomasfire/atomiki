@@ -11,6 +11,7 @@ import {setWSService} from "../store/serviceSlice";
 import {Field} from "../components/game/Field";
 import {finishGame, initializeGame} from "../store/gameSlice";
 import {LastMove} from "../components/game/LastMove";
+import {Logs} from "../components/game/Logs";
 
 export function GamePage() {
     const dispatch: Dispatch<any> = useDispatch();
@@ -69,6 +70,9 @@ export function GamePage() {
                         </button>
                     </div>
                 }
+                <div className="row-start-5 self-center w-full flex content-center justify-center align-middle h-32 my-3">
+                    <Logs/>
+                </div>
             </div>
         </div>
     );

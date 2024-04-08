@@ -9,12 +9,13 @@ import {
 import {GameFn, IWSService, NotificationFn} from "../types/game/page/IWSService";
 import {AtomsSetDTO} from "../types/transport/AtomsSetDTO";
 import {JSONTOSocketType, SocketTypePayload, SocketTypes, SocketTypesDTO} from "../types/transport/SocketTypes";
-import {setOtherStarted, startGame} from "../store/gameSlice";
+import {removeTrace, setOtherStarted, setTrace, startGame} from "../store/gameSlice";
 import {Dispatch} from "@reduxjs/toolkit";
 import {AtomsMovementDTO} from "../types/transport/AtomsMovementDTO";
 import {AtomsMarkDTO} from "../types/transport/AtomsMarkDTO";
 import {LogEntry} from "../types/transport/LogEntry";
 import {addToLog} from "../store/logSlice";
+import {Trace} from "../types/transport/Trace";
 
 
 type NotificationSubscriber = {
@@ -24,6 +25,12 @@ type NotificationSubscriber = {
 type GameSubscriber = {
     [id: string]: GameFn
 };
+
+async function delayedExecution(ms_wait: number) {
+    return new Promise((resolve, _reject) => setTimeout(() => {
+        resolve("done")
+    }, ms_wait));
+}
 
 export class WSService implements IWSService {
     private client: Client;
@@ -131,6 +138,20 @@ export class WSService implements IWSService {
         });
         this.subscribeToNotification("listen to other moved", NOTIFICATION_TYPES.COMPETITOR_MOVED, (message, payload) => {
             console.log(message, payload)
+            const trace = payload as Trace;
+            dispatch(setTrace(trace))
+            delayedExecution(3000).then(()=> {
+                dispatch(removeTrace(null))
+            })
+        });
+
+        this.subscribeToNotification("listen to other moved", NOTIFICATION_TYPES.COMPETITOR_MARKED, (message, payload) => {
+            console.log(message, payload)
+            const trace = payload as Trace;
+            dispatch(setTrace(trace))
+            delayedExecution(3000).then(()=> {
+                dispatch(removeTrace(null))
+            })
         });
     }
 }

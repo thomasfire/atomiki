@@ -2,6 +2,7 @@ import {Cell, CellType} from "./Cell";
 import {GameSettings} from "../../transport/GameSettings";
 import {createDown, createLeft, createRight, createUp, Vector} from "../../transport/Vector";
 import {AtomsSetDTO} from "../../transport/AtomsSetDTO";
+import {Trace} from "../../transport/Trace";
 
 export class FieldData {
     public cells: Array<Array<Cell>>;
@@ -15,8 +16,8 @@ export class FieldData {
         this.atomCounter = atomCounter;
     }
 
-    public static clone(otherField: FieldData):FieldData {
-        return new FieldData(otherField.cells, otherField.settings, otherField.atomCounter);
+    public static clone(otherField: FieldData): FieldData {
+        return new FieldData([...otherField.cells], otherField.settings, otherField.atomCounter);
     }
 
     public static emptyField(settings: GameSettings): FieldData {
@@ -86,10 +87,34 @@ export class FieldData {
         this.cells.forEach((row, i) => {
             row.forEach((cell, j) => {
                 if (cell.cellType == CellType.ATOM) {
-                    result.push({x: i-1, y: j-1})
+                    result.push({x: i - 1, y: j - 1})
                 }
             })
         })
         return {coordsList: result}
     }
+
+    public setTrace(trace: Trace): void {
+        let lastCoords = trace.trace[0];
+        trace.trace.slice(1).forEach((coords: Vector) => {
+            if (this.cells[coords.x + 1][coords.y + 1].cellType === CellType.VOID) {
+                this.cells[coords.x + 1][coords.y + 1] = Cell.createTrace({
+                    x: coords.x - lastCoords.x,
+                    y: coords.y - lastCoords.y
+                });
+            }
+            lastCoords = coords;
+        });
+    }
+
+    public removeTrace(): void {
+        this.cells.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if (cell.cellType == CellType.TRACE) {
+                    this.cells[i][j] = Cell.createVoid();
+                }
+            })
+        })
+    }
+
 }

@@ -1,4 +1,4 @@
-import {FieldData} from "../view/Field";
+import {FieldData} from "../view/FieldData";
 
 export interface GameState {
     ownerField: FieldData | null,

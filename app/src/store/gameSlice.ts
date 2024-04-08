@@ -1,8 +1,9 @@
 import {createSlice, Slice} from "@reduxjs/toolkit";
 import {GameState} from "../types/game/page/GameState";
 import {GameSettings} from "../types/transport/GameSettings";
-import {FieldData} from "../types/game/view/Field";
+import {FieldData} from "../types/game/view/FieldData";
 import {Vector} from "../types/transport/Vector";
+import {Trace} from "../types/transport/Trace";
 
 export const gameSlice: Slice = createSlice({
     name: 'join',
@@ -88,13 +89,28 @@ export const gameSlice: Slice = createSlice({
                 console.warn("Cannot unset competitor atoms when game is not started or finished")
             }
         },
+
+        setTrace: (state: GameState, action: {payload: Trace, type: string}) => {
+            if (state.ownerField) {
+                let cloned = FieldData.clone(state.ownerField);
+                cloned.setTrace(action.payload);
+                state.ownerField = cloned;
+            }
+        },
+        removeTrace: (state: GameState) => {
+            if (state.ownerField) {
+                let cloned = FieldData.clone(state.ownerField);
+                cloned.removeTrace();
+                state.ownerField = cloned;
+            }
+        }
     },
 })
 
 export const {
     initializeGame, setOwnAtom, setCompetitorAtom,
     unsetOwnAtom, unsetCompetitorAtom, startGame, finishGame,
-    setOtherStarted, setOtherFinished
+    setOtherStarted, setOtherFinished, setTrace, removeTrace
 } = gameSlice.actions
 
 export const gameReducer = gameSlice.reducer;

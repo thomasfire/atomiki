@@ -3,9 +3,10 @@ import {Atom} from "./Atom";
 import {Space} from "./Space";
 import {Trace} from "./Trace";
 import {Gun} from "./Gun";
+import {Stream} from "./Stream";
 import {useSelector} from "react-redux";
 import {GameStorage} from "../../types/game/GameStorage";
-import {FieldData} from "../../types/game/view/Field";
+import {FieldData} from "../../types/game/view/FieldData";
 import {IWSService} from "../../types/game/page/IWSService";
 
 
@@ -14,9 +15,9 @@ function getCell(cell: Cell, i: number, j: number, owner: boolean, disabled: boo
         case CellType.ATOM:
             return Atom(i, j, owner, disabled);
         case CellType.STREAM:
-            return Space(i, j, owner, disabled);
+            return Stream(cell);
         case CellType.TRACE:
-            return Trace(cell, i, j, owner, disabled);
+            return Trace(cell);
         case CellType.VOID:
             return Space(i, j, owner, disabled);
         case CellType.GUN:
