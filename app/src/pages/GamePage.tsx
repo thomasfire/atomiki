@@ -9,7 +9,7 @@ import {updateCurrentSettings} from "../store/settingsSlice";
 import {WSService} from "../services/WSService";
 import {setWSService} from "../store/serviceSlice";
 import {Field} from "../components/game/Field";
-import {finishGame, initializeGame} from "../store/gameSlice";
+import {initializeGame} from "../store/gameSlice";
 import {LastMove} from "../components/game/LastMove";
 import {Logs} from "../components/game/Logs";
 
@@ -46,6 +46,9 @@ export function GamePage() {
     const onStartGame = () => {
         if (ownField) wsService?.setOwnAtoms(ownField.getAtoms())
     }
+    const onFinishGame = () => {
+        if (ownField) wsService?.finishGame()
+    }
 
     return (
         <div className="w-full h-full flex content-center justify-center align-middle">
@@ -62,9 +65,9 @@ export function GamePage() {
                 {
                     (!gameStarted || !gameFinished) &&
                     <div className="row-start-4 self-center w-full flex content-center justify-center align-middle">
-                        <button className="py-3 rounded h-min self-center bg-rose-500 hover:bg-rose-700 w-full m-2"
-                                onClick={() => gameStarted ? dispatch(finishGame(null)) : onStartGame()}
-                                disabled={gameStarted && !isOtherStarted}
+                        <button className="py-3 rounded h-min self-center bg-rose-500 hover:bg-rose-700 w-full m-2 disabled:bg-rose-300"
+                                onClick={() => gameStarted ? onFinishGame() : onStartGame()}
+                                disabled={(gameStarted && !isOtherStarted) || gameFinished}
                         >
                             {gameStarted ? (isOtherStarted ? "Finish the game" : "Waiting for competitor to start...") : "Start the game"}
                         </button>

@@ -14,7 +14,7 @@ import {NOTIFICATION_TYPES} from "../types/transport/CompetitorNotificationDTO";
 import {openPage} from "../store/pageSlice";
 import {EPage} from "../types/game/page/EPage";
 import {setWSService} from "../store/serviceSlice";
-import {initializeGame} from "../store/gameSlice";
+import {initializeGame, setTurn} from "../store/gameSlice";
 
 export function WaitCompetitorPage() {
     const dispatch: Dispatch<any> = useDispatch();
@@ -41,7 +41,7 @@ export function WaitCompetitorPage() {
                     });
                     ws_svc.Subscribe(dispatch)
                     dispatch(setWSService(ws_svc));
-
+                    dispatch(setTurn(true));
                 });
         }
     }, []);

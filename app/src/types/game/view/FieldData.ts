@@ -3,6 +3,7 @@ import {GameSettings} from "../../transport/GameSettings";
 import {createDown, createLeft, createRight, createUp, Vector} from "../../transport/Vector";
 import {AtomsSetDTO} from "../../transport/AtomsSetDTO";
 import {Trace} from "../../transport/Trace";
+import {AtomsMarkDTO} from "../../transport/AtomsMarkDTO";
 
 export class FieldData {
     public cells: Array<Array<Cell>>;
@@ -101,7 +102,7 @@ export class FieldData {
                 this.cells[coords.x + 1][coords.y + 1] = Cell.createTrace({
                     x: coords.x - lastCoords.x,
                     y: coords.y - lastCoords.y
-                });
+                }, this.cells[coords.x + 1][coords.y + 1].marked);
             }
             lastCoords = coords;
         });
@@ -115,6 +116,10 @@ export class FieldData {
                 }
             })
         })
+    }
+
+    public markAtom(atomsMark: AtomsMarkDTO): void {
+        this.cells[atomsMark.coords.x + 1][atomsMark.coords.y + 1].marked = atomsMark.mark;
     }
 
 }

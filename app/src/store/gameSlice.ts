@@ -4,6 +4,7 @@ import {GameSettings} from "../types/transport/GameSettings";
 import {FieldData} from "../types/game/view/FieldData";
 import {Vector} from "../types/transport/Vector";
 import {Trace} from "../types/transport/Trace";
+import {AtomsMarkDTO} from "../types/transport/AtomsMarkDTO";
 
 export const gameSlice: Slice = createSlice({
     name: 'join',
@@ -14,6 +15,7 @@ export const gameSlice: Slice = createSlice({
         gameFinished: false,
         otherStarted: false,
         otherFinished: false,
+        ownerTurn: false,
     },
     reducers: {
         initializeGame: (state: GameState, action: { payload: GameSettings, type: string }) => {
@@ -103,6 +105,16 @@ export const gameSlice: Slice = createSlice({
                 cloned.removeTrace();
                 state.ownerField = cloned;
             }
+        },
+        setTurn: (state: GameState, action: {payload: boolean, type: string}) => {
+            state.ownerTurn = action.payload;
+        },
+        setMarked: (state: GameState, action: {payload: AtomsMarkDTO, type: string}) => {
+            if (state.ownerField) {
+                let cloned = FieldData.clone(state.ownerField);
+                cloned.markAtom(action.payload)
+                state.ownerField = cloned;
+            }
         }
     },
 })
@@ -110,7 +122,8 @@ export const gameSlice: Slice = createSlice({
 export const {
     initializeGame, setOwnAtom, setCompetitorAtom,
     unsetOwnAtom, unsetCompetitorAtom, startGame, finishGame,
-    setOtherStarted, setOtherFinished, setTrace, removeTrace
+    setOtherStarted, setOtherFinished, setTrace, removeTrace,
+    setTurn, setMarked
 } = gameSlice.actions
 
 export const gameReducer = gameSlice.reducer;

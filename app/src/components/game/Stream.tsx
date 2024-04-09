@@ -13,7 +13,8 @@ export function Stream(cell: Cell) {
     if (direction.x == -1) icon = iconUp;
     if (direction.x == 1) icon = iconDown;
     return (
-        <div className="rounded p-0.5 bg-white border-gray-100 border-solid w-6 h-6 border-2 disabled:bg-gray-100">
+        <div className={` p-0.5 ${cell.marked ? "bg-blue-500 disabled:bg-blue-300 rounded-full" : "bg-white disabled:bg-gray-100 rounded"} 
+                border-gray-100 border-solid w-6 h-6 border-2`}>
             <img src={icon} className="stroke-red-300 fill-current text-gray-200"/>
         </div>
     );

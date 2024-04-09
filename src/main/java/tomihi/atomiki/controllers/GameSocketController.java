@@ -21,6 +21,8 @@ import tomihi.atomiki.repositories.UserToGameRepository;
 public class GameSocketController {
     private final GameRepository gameRepository;
     private final UserToGameRepository userToGameRepository;
+    private final static String DESTINATION_SELF = "/game/";
+    private final static String DESTINATION_COMPETITOR = "/notifications/";
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -64,8 +66,8 @@ public class GameSocketController {
         final GameState newGameState = new GameState(initialState, game);
         this.gameRepository.save(newGameState);
 
-        this.simpMessagingTemplate.convertAndSend("/game/" + userId , new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.ATOM_SET, atomsSetDTO));
-        this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_SELF + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.ATOM_SET, atomsSetDTO));
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_COMPETITOR + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_SET,
                         "Competitor set their atoms", null));
     }
@@ -92,8 +94,8 @@ public class GameSocketController {
         // Rick and Dick were about to get their salary.
         // Unfortunately, the counting house messed everything up.
         // So, Dick got Rick's salary, and Rick got Dick's.
-        this.simpMessagingTemplate.convertAndSend("/game/" + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.LOG_ENTRY, logEntry));
-        this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_SELF + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.LOG_ENTRY, logEntry));
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_COMPETITOR + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_MOVED,
                         "Competitor made move", trace));
     }
@@ -117,8 +119,8 @@ public class GameSocketController {
         final GameState newGameState = new GameState(initialState, game);
         this.gameRepository.save(newGameState);
 
-        this.simpMessagingTemplate.convertAndSend("/game/" + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.ATOM_MARK, atomsMarkDTO));
-        this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_SELF + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.ATOM_MARK, atomsMarkDTO));
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_COMPETITOR + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_MARKED,
                         "Competitor marked the atom", atomsMarkDTO));
     }
@@ -140,10 +142,10 @@ public class GameSocketController {
 
         GameResults gameResults = game.hasBothFinished() ? game.getGameResults() : null;
 
-        this.simpMessagingTemplate.convertAndSend("/game/" + userId,
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_COMPETITOR + userId,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.OWNER_FINISHED,
                         "Competitor finished the game", gameResults));
-        this.simpMessagingTemplate.convertAndSend("/notifications/" + otherUser,
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_COMPETITOR + otherUser,
                 new CompetitorNotificationDTO(CompetitorNotificationDTO.NOTIFICATION_TYPES.COMPETITOR_FINISHED,
                         "Competitor finished the game", gameResults));
     }
@@ -156,7 +158,8 @@ public class GameSocketController {
         Game game = initialState.toGame();
         final boolean isOwner = initialState.getOwnerId().equals(userId);
 
-        this.simpMessagingTemplate.convertAndSend("/notifications/" + userId, game.getMovesLog(isOwner).getLogEntries());
+        this.simpMessagingTemplate.convertAndSend(DESTINATION_SELF + userId,
+                new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.FULL_LOG, game.getMovesLog(isOwner).getLogEntries()));
     }
 
     // TODO also error handler somewhere here

@@ -1,6 +1,13 @@
-import {Client, Message} from '@stomp/stompjs';
-import {GAME_TOPIC, NOTIFICATION_TOPIC, WS_GUIDE_URL, WS_MAKE_MOVE, WS_SET_OWN_ATOMS} from "./API";
-import {StompSubscription} from "@stomp/stompjs/src/stomp-subscription";
+import {Client, Message, StompSubscription} from '@stomp/stompjs';
+import {
+    GAME_TOPIC,
+    NOTIFICATION_TOPIC,
+    WS_FINISH,
+    WS_GUIDE_URL, WS_LOGS,
+    WS_MAKE_MOVE,
+    WS_MARK_ATOM,
+    WS_SET_OWN_ATOMS
+} from "./API";
 import {
     CompetitorNotificationDTO,
     JSONToCompetitorNotificationDTO,
@@ -9,13 +16,23 @@ import {
 import {GameFn, IWSService, NotificationFn} from "../types/game/page/IWSService";
 import {AtomsSetDTO} from "../types/transport/AtomsSetDTO";
 import {JSONTOSocketType, SocketTypePayload, SocketTypes, SocketTypesDTO} from "../types/transport/SocketTypes";
-import {removeTrace, setOtherStarted, setTrace, startGame} from "../store/gameSlice";
+import {
+    finishGame,
+    removeTrace,
+    setMarked,
+    setOtherFinished,
+    setOtherStarted,
+    setTrace,
+    setTurn,
+    startGame
+} from "../store/gameSlice";
 import {Dispatch} from "@reduxjs/toolkit";
 import {AtomsMovementDTO} from "../types/transport/AtomsMovementDTO";
 import {AtomsMarkDTO} from "../types/transport/AtomsMarkDTO";
 import {LogEntry} from "../types/transport/LogEntry";
-import {addToLog} from "../store/logSlice";
+import {addToLog, setLog} from "../store/logSlice";
 import {Trace} from "../types/transport/Trace";
+import {MovesLog} from "../types/transport/MovesLog";
 
 
 type NotificationSubscriber = {
@@ -34,11 +51,11 @@ async function delayedExecution(ms_wait: number) {
 
 export class WSService implements IWSService {
     private client: Client;
-    private userId: string;
+    private readonly userId: string;
     private notifications: StompSubscription | undefined;
     private game: StompSubscription | undefined;
     private notificationSubscribers: Array<NotificationSubscriber> = new Array<NotificationSubscriber>(NOTIFICATION_TYPES.OWNER_FINISHED.valueOf() + 1);
-    private gameSubscribers: Array<GameSubscriber> = new Array<GameSubscriber>(SocketTypes.LOG_ENTRY.valueOf() + 1);
+    private gameSubscribers: Array<GameSubscriber> = new Array<GameSubscriber>(SocketTypes.FULL_LOG.valueOf() + 1);
 
     constructor(userId: string) {
         this.userId = userId;
@@ -131,6 +148,11 @@ export class WSService implements IWSService {
             dispatch(addToLog(logEntry))
             console.log(logEntry)
         });
+        this.subscribeToGame("full log", SocketTypes.FULL_LOG, (payload: SocketTypePayload) => {
+            const movesLog = payload as MovesLog;
+            dispatch(setLog(movesLog))
+            console.log(movesLog)
+        });
 
         this.subscribeToNotification("listen to other started", NOTIFICATION_TYPES.COMPETITOR_SET, (message, payload) => {
             console.log(message, payload)
@@ -140,18 +162,46 @@ export class WSService implements IWSService {
             console.log(message, payload)
             const trace = payload as Trace;
             dispatch(setTrace(trace))
+            dispatch(setTurn(true))
             delayedExecution(3000).then(()=> {
                 dispatch(removeTrace(null))
             })
         });
-
-        this.subscribeToNotification("listen to other moved", NOTIFICATION_TYPES.COMPETITOR_MARKED, (message, payload) => {
+        this.subscribeToNotification("listen to other marked", NOTIFICATION_TYPES.COMPETITOR_MARKED, (message, payload) => {
             console.log(message, payload)
-            const trace = payload as Trace;
-            dispatch(setTrace(trace))
-            delayedExecution(3000).then(()=> {
-                dispatch(removeTrace(null))
-            })
+            const marking = payload as AtomsMarkDTO;
+            dispatch(setMarked(marking))
+        });
+        this.subscribeToNotification("listen to other finished", NOTIFICATION_TYPES.COMPETITOR_FINISHED, (message, payload) => {
+            console.log(message, payload)
+            dispatch(setOtherFinished(null))
+        });
+        this.subscribeToNotification("listen to self finished", NOTIFICATION_TYPES.OWNER_FINISHED, (message, payload) => {
+            console.log(message, payload)
+            dispatch(finishGame(null))
+        });
+    }
+
+    finishGame(): void {
+        console.log("finish")
+        this.client.publish({
+            destination: WS_FINISH + this.userId,
+            body: ""
+        });
+    }
+
+    markCompetitorAtom(atom: AtomsMarkDTO): void {
+        console.log(atom)
+        this.client.publish({
+            destination: WS_MARK_ATOM + this.userId,
+            body: JSON.stringify(atom)
+        });
+    }
+
+    requestLogs(): void {
+        console.log("requestLogs")
+        this.client.publish({
+            destination: WS_LOGS + this.userId
         });
     }
 }

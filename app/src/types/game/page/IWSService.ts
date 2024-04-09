@@ -2,6 +2,7 @@ import {CompetitorNotificationPayload, NOTIFICATION_TYPES} from "../../transport
 import {AtomsSetDTO} from "../../transport/AtomsSetDTO";
 import {SocketTypePayload, SocketTypes} from "../../transport/SocketTypes";
 import {AtomsMovementDTO} from "../../transport/AtomsMovementDTO";
+import {AtomsMarkDTO} from "../../transport/AtomsMarkDTO";
 
 export type NotificationFn = (message: string, payload: CompetitorNotificationPayload) => void;
 export type GameFn = (payload: SocketTypePayload) => void;
@@ -13,4 +14,7 @@ export interface IWSService {
     shutdown(): void;
     setOwnAtoms(atomsSet: AtomsSetDTO): void;
     makeMovement(movement: AtomsMovementDTO): void;
+    markCompetitorAtom(atom: AtomsMarkDTO): void;
+    finishGame(): void;
+    requestLogs(): void;
 }

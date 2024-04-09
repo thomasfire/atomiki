@@ -10,25 +10,26 @@ import {FieldData} from "../../types/game/view/FieldData";
 import {IWSService} from "../../types/game/page/IWSService";
 
 
-function getCell(cell: Cell, i: number, j: number, owner: boolean, disabled: boolean, wsService: IWSService | null): JSX.Element {
+function getCell(cell: Cell, i: number, j: number, owner: boolean, disabled: boolean, wsService: IWSService | null, ownerTurn: boolean): JSX.Element {
     switch (cell.cellType) {
         case CellType.ATOM:
-            return Atom(i, j, owner, disabled);
+            return Atom(cell, i, j, owner, disabled, wsService);
         case CellType.STREAM:
             return Stream(cell);
         case CellType.TRACE:
             return Trace(cell);
         case CellType.VOID:
-            return Space(i, j, owner, disabled);
+            return Space(cell, i, j, owner, disabled, wsService);
         case CellType.GUN:
-            return Gun(cell, i, j, owner, disabled, wsService);
+            return Gun(cell, i, j, owner, disabled, wsService, ownerTurn);
     }
-    return Space(i, j, owner, disabled);
+    return Space(cell, i, j, owner, disabled, wsService);
 }
 
 export function Field({owner, fieldData}: { owner: boolean, fieldData: FieldData }) {
     const gameStarted = useSelector((state: GameStorage) => state.game.gameStarted);
     const gameFinished = useSelector((state: GameStorage) => state.game.gameFinished);
+    const ownerTurn = useSelector((state: GameStorage) => state.game.ownerTurn);
     const ws_service = useSelector((state: GameStorage) => state.service.ws_service);
     const disabled = owner ? (gameStarted || gameFinished) : ((!gameStarted || gameFinished));
 
@@ -41,7 +42,7 @@ export function Field({owner, fieldData}: { owner: boolean, fieldData: FieldData
                         {row.map((cell: Cell, j: number) => {
                             return <td className="h-6 w-6 min-w-6 max-w-6 min-h-6 max-h-6"
                                        key={"row_" + owner + " " + i + "col" + j}>
-                                {getCell(cell, i, j, owner, disabled, ws_service)}
+                                {getCell(cell, i, j, owner, disabled, ws_service, ownerTurn)}
                             </td>
                         })}
                     </tr>

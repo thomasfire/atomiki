@@ -8,6 +8,7 @@ public class SocketTypeWrapper {
         ATOM_MARK,
         ATOM_SET,
         LOG_ENTRY,
+        FULL_LOG,
     }
     SocketTypeWrapper.SocketTypes type;
     Object payload;
