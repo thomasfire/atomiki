@@ -16,6 +16,7 @@ export const gameSlice: Slice = createSlice({
         otherStarted: false,
         otherFinished: false,
         ownerTurn: false,
+        isOwner: false,
     },
     reducers: {
         initializeGame: (state: GameState, action: { payload: GameSettings, type: string }) => {
@@ -115,7 +116,37 @@ export const gameSlice: Slice = createSlice({
                 cloned.markAtom(action.payload)
                 state.ownerField = cloned;
             }
-        }
+        },
+        setOwner: (state: GameState, action: {payload: boolean, type: string}) => {
+            state.isOwner = action.payload;
+        },
+        setOwnerGuessed: (state: GameState, action: {payload: Vector[], type: string}) => {
+            if (state.ownerField) {
+                let cloned = FieldData.clone(state.ownerField);
+                cloned.markGuessed(action.payload)
+                state.ownerField = cloned;
+            }
+        },
+        setGuessedOrReal: (state: GameState, action: {payload: { atoms: Vector[], real: boolean, owner: boolean }, type: string}) => {
+            const ownerMapping = action.payload.owner === state.isOwner;
+            console.log(ownerMapping, action.payload.owner, action.payload.real, state.isOwner, action.payload.atoms)
+            if (ownerMapping && state.ownerField) {
+                let cloned = FieldData.clone(state.ownerField);
+                if (action.payload.real)
+                    cloned.markReal(action.payload.atoms)
+                else
+                    cloned.markGuessed(action.payload.atoms)
+                state.ownerField = cloned;
+            }
+            if (!ownerMapping && state.competitorField) {
+                let cloned = FieldData.clone(state.competitorField);
+                if (action.payload.real)
+                    cloned.markReal(action.payload.atoms)
+                else
+                    cloned.markGuessed(action.payload.atoms)
+                state.competitorField = cloned;
+            }
+        },
     },
 })
 
@@ -123,7 +154,7 @@ export const {
     initializeGame, setOwnAtom, setCompetitorAtom,
     unsetOwnAtom, unsetCompetitorAtom, startGame, finishGame,
     setOtherStarted, setOtherFinished, setTrace, removeTrace,
-    setTurn, setMarked
+    setTurn, setMarked, setOwner, setGuessedOrReal
 } = gameSlice.actions
 
 export const gameReducer = gameSlice.reducer;

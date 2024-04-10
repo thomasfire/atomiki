@@ -122,4 +122,16 @@ export class FieldData {
         this.cells[atomsMark.coords.x + 1][atomsMark.coords.y + 1].marked = atomsMark.mark;
     }
 
+    public markGuessed(guessed: Vector[]): void {
+        guessed.forEach((atom)=> {
+            this.cells[atom.x][atom.y].guessed = true;
+        })
+    }
+
+    public markReal(real: Vector[]): void {
+        real.forEach((atom)=> {
+            this.cells[atom.x][atom.y].real = true;
+        })
+    }
+
 }

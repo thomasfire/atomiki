@@ -18,7 +18,7 @@ import {AtomsSetDTO} from "../types/transport/AtomsSetDTO";
 import {JSONTOSocketType, SocketTypePayload, SocketTypes, SocketTypesDTO} from "../types/transport/SocketTypes";
 import {
     finishGame,
-    removeTrace,
+    removeTrace, setGuessedOrReal,
     setMarked,
     setOtherFinished,
     setOtherStarted,
@@ -33,6 +33,10 @@ import {LogEntry} from "../types/transport/LogEntry";
 import {addToLog, setLog} from "../store/logSlice";
 import {Trace} from "../types/transport/Trace";
 import {MovesLog} from "../types/transport/MovesLog";
+import {GameResults} from "../types/transport/GameResults";
+import {openPage} from "../store/pageSlice";
+import {EPage} from "../types/game/page/EPage";
+import {setResult} from "../store/resultSlice";
 
 
 type NotificationSubscriber = {
@@ -47,6 +51,36 @@ async function delayedExecution(ms_wait: number) {
     return new Promise((resolve, _reject) => setTimeout(() => {
         resolve("done")
     }, ms_wait));
+}
+
+function setGuessedAndRealAtoms(payload: AtomsMarkDTO | Trace | GameResults | null, dispatch: Dispatch<any>) {
+    const results = payload as GameResults | null;
+    if (results) {
+        console.log(results)
+        dispatch(setResult(results))
+        dispatch(setGuessedOrReal({
+            atoms: results.ownerAtoms,
+            real: true,
+            owner: true,
+        }))
+        dispatch(setGuessedOrReal({
+            atoms: results.ownerGuessedCompetitorAtoms,
+            real: false,
+            owner: false,
+        }))
+        dispatch(setGuessedOrReal({
+            atoms: results.competitorAtoms,
+            real: true,
+            owner: false,
+        }))
+        dispatch(setGuessedOrReal({
+            atoms: results.competitorGuessedOwnerAtoms,
+            real: false,
+            owner: true,
+        }))
+
+        dispatch(openPage(EPage.ResultPage))
+    }
 }
 
 export class WSService implements IWSService {
@@ -175,10 +209,12 @@ export class WSService implements IWSService {
         this.subscribeToNotification("listen to other finished", NOTIFICATION_TYPES.COMPETITOR_FINISHED, (message, payload) => {
             console.log(message, payload)
             dispatch(setOtherFinished(null))
+            setGuessedAndRealAtoms(payload, dispatch);
         });
         this.subscribeToNotification("listen to self finished", NOTIFICATION_TYPES.OWNER_FINISHED, (message, payload) => {
             console.log(message, payload)
             dispatch(finishGame(null))
+            setGuessedAndRealAtoms(payload, dispatch);
         });
     }
 

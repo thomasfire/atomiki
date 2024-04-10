@@ -1,9 +1,5 @@
 import {Vector} from "./Vector";
 
-export interface GameResults {
-
-}
-
 export enum WINNER {
     OWNER,
     COMPETITOR,
@@ -16,6 +12,12 @@ export interface GameResults {
     competitorGuessedOwnerAtoms: Vector[];
     ownerScore: number;
     competitorScore: number;
-    winner: WINNER;
+    winner: WINNER | "OWNER" | "COMPETITOR" | "DRAW";
+}
+
+export function WinnerFromGameResults(json: GameResults): WINNER {
+    const winner  = json.winner.toString() as  "OWNER" | "COMPETITOR" | "DRAW";
+
+    return WINNER[winner];
 }
 

@@ -6,6 +6,7 @@ import {credentialReducer} from "./credentialSlice";
 import {serviceReducer} from "./serviceSlice";
 import {gameReducer} from "./gameSlice";
 import {logReducer} from "./logSlice";
+import {resultReducer} from "./resultSlice";
 
 export default configureStore({
     reducer: {
@@ -15,7 +16,8 @@ export default configureStore({
         credential: credentialReducer,
         service: serviceReducer,
         game: gameReducer,
-        log: logReducer
+        log: logReducer,
+        results: resultReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware({
         serializableCheck: {
