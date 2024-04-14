@@ -28,6 +28,12 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 20.x
+    - name: Build frontend app
+      run: |
+        cd app
+        npm install
+        npm run build
+        cd ..
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: Run unittests
@@ -43,3 +49,8 @@ jobs:
         npm run test
     - name: Stop server
       run: mvn spring-boot:stop
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        # A file, directory or wildcard pattern that describes what to upload
+        path: target/atomiki-*.jar
