@@ -31,6 +31,13 @@ export function IndexPage() {
                         font-bold py-2 px-4 rounded h-min self-center m-1">
                     Join existing game
                 </button>
+                <button onClick={() => {
+                    PageService.getInstance()?.openTutorial()
+                }}
+                        className="bg-emerald-500 hover:bg-emerald-700 text-white col-start-1 row-start-3
+                        font-bold py-2 px-4 rounded h-min self-center m-1">
+                    Tutorial
+                </button>
             </div>
             <Notification/>
         </div>

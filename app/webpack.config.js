@@ -33,6 +33,16 @@ module.exports = {
                 type: 'asset/resource'
             },
             {
+                test: /\.(md|txt)$/i,
+                type: 'asset/inline',
+                generator: {
+                    dataUrl: content => {
+                        content = content.toString();
+                        return content.toString();
+                    }
+                }
+            },
+            {
                 test: /\.css$/i,
                 use: ["style-loader", "css-loader", 'postcss-loader'],
             },

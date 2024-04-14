@@ -4,5 +4,6 @@ export enum EPage {
     JoinPage,
     WaitCompetitorPage,
     GamePage,
-    ResultPage
+    ResultPage,
+    TutorialPage,
 }

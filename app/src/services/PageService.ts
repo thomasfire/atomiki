@@ -36,6 +36,9 @@ export class PageService {
     public openIndex() {
         this.dispatch(openPage(EPage.IndexPage))
     }
+    public openTutorial() {
+        this.dispatch(openPage(EPage.TutorialPage))
+    }
 
     public openJoin() {
         this.dispatch(openPage(EPage.JoinPage))
