@@ -28,14 +28,14 @@ export function Notification() {
     }
 
     return (
-        <div className={`${message ? "opacity-100" : "opacity-0 hidden"} absolute transition-opacity duration-300 top-0
+        <div className={`${message ? "opacity-100" : "opacity-0 -translate-y-full"} absolute transition-all duration-300 top-0
                 m-2 left-1/2 transform -translate-x-1/2
                 inset-x-0 p-2 bg-${color}-200 rounded
                 border-none text-gray-800 w-64 min-h-12 max-h-24 h-min`}
              onClick={() => NotificationService.getInstance()?.removeNotification()}>
             <div className="flex">
                 <div className="flex-shrink-0 justify-self-center self-center align-middle">
-                    <img src={icon} className={`h-12 w-12`} aria-hidden="true" alt={`icon-${level?.toString}`}/>
+                    <img src={icon} className={`h-12 w-12`} aria-hidden="true" alt={`icon-${level?.toString}`} aria-placeholder="icon"/>
                 </div>
                 <div className="ml-3 justify-self-center self-center align-middle">
                     <p className="text-sm font-medium">{message}</p>
