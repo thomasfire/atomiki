@@ -5,7 +5,7 @@ import {ENotificationLevel} from "../types/game/ENotificationLevel";
 export class NotificationService {
     private static instance: NotificationService | null;
 
-    private dispatch: Dispatch<any>;
+    private readonly dispatch: Dispatch<any>;
     private timer: null | ReturnType<typeof setTimeout>;
 
     private constructor(dispatch: Dispatch<any>) {

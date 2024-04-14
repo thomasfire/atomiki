@@ -36,11 +36,10 @@ import {addToLog, setLog} from "../store/logSlice";
 import {Trace} from "../types/transport/Trace";
 import {MovesLog} from "../types/transport/MovesLog";
 import {GameResults} from "../types/transport/GameResults";
-import {openPage} from "../store/pageSlice";
-import {EPage} from "../types/game/page/EPage";
 import {setResult} from "../store/resultSlice";
 import {NotificationService} from "./NotificationService";
 import {ENotificationLevel} from "../types/game/ENotificationLevel";
+import {PageService} from "./PageService";
 
 
 type NotificationSubscriber = {
@@ -82,7 +81,7 @@ function setGuessedAndRealAtoms(payload: AtomsMarkDTO | Trace | GameResults | nu
             owner: true,
         }))
 
-        dispatch(openPage(EPage.ResultPage))
+        PageService.getInstance()?.openResults()
     }
 }
 
@@ -103,6 +102,7 @@ export class WSService implements IWSService {
                 this.game = this.client.subscribe(GAME_TOPIC + this.userId, (message: Message) => this.onGame(message));
             },
             onStompError: frame => {
+                console.warn(frame)
             }
         });
         for (let i = 0; i < this.notificationSubscribers.length; i++) {
@@ -167,12 +167,12 @@ export class WSService implements IWSService {
 
     public Subscribe(dispatch: Dispatch<any>) {
         this.subscribeToGame("atoms_set", SocketTypes.ATOM_SET, (payload: SocketTypePayload) => {
-            const set = payload as AtomsSetDTO;
+            const _set = payload as AtomsSetDTO;
             dispatch(startGame(null));
             NotificationService.getInstance()?.emitNotification("Atoms are successfully set", ENotificationLevel.INFO)
         });
         this.subscribeToGame("atoms marked", SocketTypes.ATOM_MARK, (payload: SocketTypePayload) => {
-            const set = payload as AtomsMarkDTO;
+            const _set = payload as AtomsMarkDTO;
         });
         this.subscribeToGame("log entry", SocketTypes.LOG_ENTRY, (payload: SocketTypePayload) => {
             const logEntry = payload as LogEntry;
@@ -183,7 +183,7 @@ export class WSService implements IWSService {
             dispatch(setLog(movesLog))
         });
 
-        this.subscribeToNotification("listen to other started", NOTIFICATION_TYPES.COMPETITOR_SET, (message, payload) => {
+        this.subscribeToNotification("listen to other started", NOTIFICATION_TYPES.COMPETITOR_SET, (_message, _payload) => {
             dispatch(setOtherStarted(null))
             NotificationService.getInstance()?.emitNotification("Competitor set his atoms", ENotificationLevel.INFO)
         });
@@ -192,7 +192,7 @@ export class WSService implements IWSService {
             NotificationService.getInstance()?.emitNotification("Competitor has moved. Now your turn", ENotificationLevel.INFO)
             dispatch(setTrace(trace))
             dispatch(setTurn(true))
-            delayedExecution(3000).then(()=> {
+            delayedExecution(3000).then(() => {
                 dispatch(removeTrace(null))
             })
         });

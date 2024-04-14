@@ -2,7 +2,7 @@ import {createSlice, Slice} from "@reduxjs/toolkit";
 import {ResultState} from "../types/game/page/ResultState";
 import {GameResults} from "../types/transport/GameResults";
 
-export const resultlice: Slice = createSlice({
+export const resultSlice: Slice = createSlice({
     name: 'results',
     initialState: {
         isOwner: false,
@@ -15,6 +15,6 @@ export const resultlice: Slice = createSlice({
     },
 })
 
-export const { setResult } = resultlice.actions
+export const { setResult } = resultSlice.actions
 
-export const resultReducer = resultlice.reducer;
+export const resultReducer = resultSlice.reducer;

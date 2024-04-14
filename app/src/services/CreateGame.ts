@@ -9,7 +9,14 @@ export async function CreateGame(): Promise<CredentialDTO> {
         headers: {
             "Content-Type": "application/json",
         }
-    }).then(async (value: Response) => await value.json())
+    }).then(async (value: Response) => {
+        const json = await value.json();
+        if (!value.ok) {
+            console.error(json)
+            throw Error(json)
+        }
+        return json;
+    })
 }
 
 export async function JoinGame(gameId: string): Promise<GameSettingsDTO> {
@@ -18,5 +25,13 @@ export async function JoinGame(gameId: string): Promise<GameSettingsDTO> {
         headers: {
             "Content-Type": "application/json",
         }
-    }).then(async (value: Response) => await value.json())
+    }).then(async (value: Response) => {
+        const json = await value.json();
+        if (!value.ok) {
+            console.error(json)
+            throw Error(json)
+        }
+        return json;
+    })
+
 }

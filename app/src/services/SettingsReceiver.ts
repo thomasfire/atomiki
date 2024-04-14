@@ -4,7 +4,14 @@ import {CredentialDTO} from "../types/transport/CredentialDTO";
 import {GameSettingsDTO} from "../types/transport/GameSettingsDTO";
 
 export async function receiveSettings(): Promise<Array<GameSettings>> {
-    return fetch(AVAILABLE_SETTINGS_URL).then(async (value: Response) => await value.json())
+    return fetch(AVAILABLE_SETTINGS_URL).then(async (value: Response) => {
+        const json = await value.json();
+        if (!value.ok) {
+            console.error(json)
+            throw Error(json)
+        }
+        return json;
+    })
 }
 
 export async function setSettings(settings: GameSettings, credentials: CredentialDTO): Promise<GameSettingsDTO> {
@@ -18,5 +25,12 @@ export async function setSettings(settings: GameSettings, credentials: Credentia
             "Content-Type": "application/json",
         },
         body: JSON.stringify(toSend)
-    }).then(async (value: Response) => await value.json())
+    }).then(async (value: Response) => {
+        const json = await value.json();
+        if (!value.ok) {
+            console.error(json)
+            throw Error(json)
+        }
+        return json;
+    })
 }

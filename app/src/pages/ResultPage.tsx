@@ -1,9 +1,10 @@
 import {useSelector} from "react-redux";
 import {GameStorage} from "../types/game/GameStorage";
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {Field} from "../components/game/Field";
 import {Winner} from "../components/Winner";
 import {ResultsStats} from "../components/ResultsStats";
+import {Notification} from "../components/Notification";
 
 export function ResultPage() {
     const ownField = useSelector((state: GameStorage) => state.game.ownerField);
@@ -34,6 +35,7 @@ export function ResultPage() {
                     <ResultsStats/>
                 </div>
             </div>
+            <Notification/>
         </div>
     );
 }

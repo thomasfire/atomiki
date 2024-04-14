@@ -5,9 +5,12 @@ import {receiveSettings} from "../services/SettingsReceiver";
 import {GameSettings} from "../types/transport/GameSettings";
 import {updateAvailableSettings} from "../store/settingsSlice";
 import {GameStorage} from "../types/game/GameStorage";
-import {openPage} from "../store/pageSlice";
-import {EPage} from "../types/game/page/EPage";
 import {SettingsButton} from "../components/SettingsButton";
+import {PageService} from "../services/PageService";
+import {Notification} from "../components/Notification";
+import {ReturnButton} from "../components/ReturnButton";
+import {NotificationService} from "../services/NotificationService";
+import {ENotificationLevel} from "../types/game/ENotificationLevel";
 
 
 export function SettingsPage() {
@@ -16,7 +19,12 @@ export function SettingsPage() {
     const currentSettings = useSelector((state: GameStorage) => state.settings.currentSettings);
 
     useEffect(() => {
-        receiveSettings().then((settings: Array<GameSettings>) => dispatch(updateAvailableSettings(settings)));
+        receiveSettings()
+            .then((settings: Array<GameSettings>) => dispatch(updateAvailableSettings(settings)))
+            .catch(reason => {
+                NotificationService.getInstance()?.emitNotification("Failed to receive settings", ENotificationLevel.ERROR)
+                console.error(reason)
+            })
     }, [])
 
     return (
@@ -34,11 +42,16 @@ export function SettingsPage() {
                 }
                 {
                     availableSettings &&
-                    <button className={`py-4 px-4 rounded h-min self-center m-1 bg-rose-500 hover:bg-rose-700
+                    <>
+                        <button className={`py-4 px-4 rounded h-min self-center m-1 bg-rose-500 hover:bg-rose-700
                                     col-start-1 row-start-${availableSettings.length + 1}`}
-                            onClick={() => dispatch(openPage(EPage.WaitCompetitorPage))}>Start game</button>
+                                onClick={() => PageService.getInstance()?.createGame(currentSettings)}>Start game
+                        </button>
+                        <ReturnButton index={availableSettings.length + 2}/>
+                    </>
                 }
             </div>
+            <Notification/>
         </div>
     );
 }

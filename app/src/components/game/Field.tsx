@@ -8,9 +8,10 @@ import {useSelector} from "react-redux";
 import {GameStorage} from "../../types/game/GameStorage";
 import {FieldData} from "../../types/game/view/FieldData";
 import {IWSService} from "../../types/game/page/IWSService";
+import {ReactElement} from "react";
 
 
-function getCell(cell: Cell, i: number, j: number, owner: boolean, disabled: boolean, wsService: IWSService | null, ownerTurn: boolean): JSX.Element {
+function getCell(cell: Cell, i: number, j: number, owner: boolean, disabled: boolean, wsService: IWSService | null, ownerTurn: boolean): ReactElement {
     switch (cell.cellType) {
         case CellType.ATOM:
             return Atom(cell, i, j, owner, disabled, wsService);

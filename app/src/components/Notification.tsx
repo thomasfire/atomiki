@@ -35,7 +35,7 @@ export function Notification() {
              onClick={() => NotificationService.getInstance()?.removeNotification()}>
             <div className="flex">
                 <div className="flex-shrink-0 justify-self-center self-center align-middle">
-                    <img src={icon} className={`h-12 w-12`} aria-hidden="true"/>
+                    <img src={icon} className={`h-12 w-12`} aria-hidden="true" alt={`icon-${level?.toString}`}/>
                 </div>
                 <div className="ml-3 justify-self-center self-center align-middle">
                     <p className="text-sm font-medium">{message}</p>
