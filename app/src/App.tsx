@@ -8,7 +8,6 @@ import {SettingsPage} from "./pages/SettingsPage";
 import {ResultPage} from "./pages/ResultPage";
 import {WaitCompetitorPage} from "./pages/WaitCompetitorPage";
 import {GamePage} from "./pages/GamePage";
-import {TestPage} from "./pages/TestPage";
 
 function App() {
     const page: EPage = useSelector(((state: GameStorage) => state.page.currentPage));
@@ -26,8 +25,6 @@ function App() {
             return <WaitCompetitorPage/>
         case EPage.GamePage:
             return <GamePage/>
-        case EPage.TestPage:
-            return <TestPage/>
     }
 }
 

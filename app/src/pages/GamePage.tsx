@@ -12,6 +12,9 @@ import {Field} from "../components/game/Field";
 import {initializeGame} from "../store/gameSlice";
 import {LastMove} from "../components/game/LastMove";
 import {Logs} from "../components/game/Logs";
+import {Notification} from "../components/Notification";
+import {NotificationService} from "../services/NotificationService";
+import {ENotificationLevel} from "../types/game/ENotificationLevel";
 
 export function GamePage() {
     const dispatch: Dispatch<any> = useDispatch();
@@ -31,13 +34,16 @@ export function GamePage() {
             if (joinID && !credentials.userID) {
                 JoinGame(joinID)
                     .then((gameSettingsDTO: GameSettingsDTO) => {
-                        console.log(gameSettingsDTO)
                         dispatch(updateCredentials(gameSettingsDTO.credentials))
                         dispatch(updateCurrentSettings(gameSettingsDTO.settings))
                         const ws_svc = new WSService(gameSettingsDTO.credentials.userId);
                         dispatch(setWSService(ws_svc));
                         dispatch(initializeGame(gameSettingsDTO.settings));
                         ws_svc.Subscribe(dispatch)
+                    })
+                    .catch(reason => {
+                        NotificationService.getInstance()?.emitNotification("Error on joining the game", ENotificationLevel.ERROR)
+                        console.error(reason)
                     });
             }
         }
@@ -51,8 +57,8 @@ export function GamePage() {
     }
 
     return (
-        <div className="w-full h-full flex content-center justify-center align-middle">
-            <div className="grid h-min self-center">
+        <div className="w-full flex content-center justify-center align-middle my-4">
+            <div className="grid h-min self-center my-2">
                 <div className="row-start-1 self-center m-2">
                     {ownField && <Field owner={true} fieldData={ownField} key="owner_field"/>}
                 </div>
@@ -77,6 +83,7 @@ export function GamePage() {
                     <Logs/>
                 </div>
             </div>
+            <Notification/>
         </div>
     );
 }

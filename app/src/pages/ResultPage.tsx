@@ -19,8 +19,8 @@ export function ResultPage() {
     }, []);
 
     return (
-        <div className="w-full h-full flex content-center justify-center align-middle">
-            <div className="grid h-min self-center">
+        <div className="w-full flex content-center justify-center align-middle my-4">
+            <div className="grid h-min self-center m-2">
                 <div className="row-start-1 self-center m-2">
                     <Winner/>
                 </div>

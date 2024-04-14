@@ -8,7 +8,7 @@ module.exports = {
   plugins: [],
   safelist: [
     {
-      pattern: /bg-(red|green|blue|violet|amber)-(200|500|700)/, // You can display all the colors that you need
+      pattern: /(bg|text|border)-(red|green|blue|violet|amber|emerald)-(100|200|300|500|700|600)/, // You can display all the colors that you need
       variants: ['hover', 'focus'],      // Optional
     },
     {

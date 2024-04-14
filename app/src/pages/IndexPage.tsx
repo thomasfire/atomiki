@@ -1,12 +1,17 @@
-import React from "react";
-import { useDispatch } from 'react-redux';
+import React, {useEffect} from "react";
+import {useDispatch} from 'react-redux';
 import {Dispatch} from "@reduxjs/toolkit";
 import {openPage} from "../store/pageSlice";
 import {EPage} from "../types/game/page/EPage";
 import {setOwner} from "../store/gameSlice";
+import {NotificationService} from "../services/NotificationService";
+import {Notification} from "../components/Notification";
 
 export function IndexPage() {
     const dispatch: Dispatch<any> = useDispatch();
+    useEffect(() => {
+        NotificationService.init(dispatch);
+    }, []);
     return (
         <div className="w-full h-full flex content-center justify-center align-middle">
             <div className="grid h-min self-center">
@@ -27,6 +32,7 @@ export function IndexPage() {
                     Join existing game
                 </button>
             </div>
+            <Notification/>
         </div>
     );
 }

@@ -9,18 +9,22 @@ export function Winner() {
 
     let signage: string | null = null;
     let background = "";
-    if (winner) {
-        if ((isOwner && WINNER.OWNER.valueOf() == winner.valueOf()) || (!isOwner && winner == WINNER.COMPETITOR)) {
+    if (winner !== null) {
+        if ((isOwner && WINNER.OWNER == winner) || (!isOwner && winner == WINNER.COMPETITOR)) {
             signage = "YOU"
             background = "bg-emerald-600"
-        } else if ((!isOwner && WINNER.OWNER.valueOf() == winner.valueOf()) || (isOwner && winner == WINNER.COMPETITOR)) {
-            signage = "COMPETITOR"
-            background = "bg-rose-600"
-        } else if (winner == WINNER.DRAW) {
-            signage = "DRAW"
-            background = "bg-blue-600"
+        } else {
+            if ((!isOwner && WINNER.OWNER == winner) || (isOwner && winner == WINNER.COMPETITOR)) {
+                signage = "COMPETITOR"
+                background = "bg-rose-600"
+            } else if (winner == WINNER.DRAW) {
+                signage = "DRAW"
+                background = "bg-blue-600"
+            }
         }
     }
+
+    console.log()
 
     return signage ? (
         <div className={`${background} py-2 px-2 rounded h-min self-center m-2 text-white`}>

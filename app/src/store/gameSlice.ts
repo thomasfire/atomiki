@@ -5,6 +5,8 @@ import {FieldData} from "../types/game/view/FieldData";
 import {Vector} from "../types/transport/Vector";
 import {Trace} from "../types/transport/Trace";
 import {AtomsMarkDTO} from "../types/transport/AtomsMarkDTO";
+import {NotificationService} from "../services/NotificationService";
+import {ENotificationLevel} from "../types/game/ENotificationLevel";
 
 export const gameSlice: Slice = createSlice({
     name: 'join',
@@ -26,14 +28,18 @@ export const gameSlice: Slice = createSlice({
         startGame: (state: GameState) => {
             if (!state.gameStarted)
                 state.gameStarted = true;
-            else
-                console.warn("Cannot start game again")
+            else {
+                console.warn("Cannot start the game again")
+                NotificationService.getInstance()?.emitNotification("Cannot start the game again", ENotificationLevel.WARNING)
+            }
         },
         finishGame: (state: GameState) => {
             if (!state.gameFinished && state.gameStarted)
                 state.gameFinished = true;
-            else
-                console.warn("Cannot finish game again")
+            else {
+                console.warn("Cannot finish the game again")
+                NotificationService.getInstance()?.emitNotification("Cannot finish the game again", ENotificationLevel.WARNING)
+            }
         },
         setOtherStarted: (state: GameState) => {
             state.otherStarted = true;
@@ -47,12 +53,13 @@ export const gameSlice: Slice = createSlice({
                     let copy = state.ownerField ? FieldData.clone(state.ownerField) : null;
                     copy?.setAtom(action.payload)
                     state.ownerField = copy;
-                } catch (e) {
+                } catch (e: any) {
                     console.warn(e)
+                    NotificationService.getInstance()?.emitNotification(e.toString(), ENotificationLevel.WARNING)
                 }
             } else {
-                // TODO notification
                 console.warn("Cannot set own atoms when game is started")
+                NotificationService.getInstance()?.emitNotification("Cannot set own atoms when game is started", ENotificationLevel.WARNING)
             }
         },
         setCompetitorAtom: (state: GameState, action: { payload: Vector, type: string }) => {
@@ -61,11 +68,13 @@ export const gameSlice: Slice = createSlice({
                     let copy = state.competitorField ? FieldData.clone(state.competitorField) : null;
                     copy?.setAtom(action.payload)
                     state.competitorField = copy;
-                } catch (e) {
+                } catch (e: any) {
                     console.warn(e)
+                    NotificationService.getInstance()?.emitNotification(e.toString(), ENotificationLevel.WARNING)
                 }
             } else {
                 console.warn("Cannot set competitor atoms when game is not started or finished")
+                NotificationService.getInstance()?.emitNotification("Cannot set competitor atoms when game is not started or finished", ENotificationLevel.WARNING)
             }
         },
 
@@ -75,8 +84,8 @@ export const gameSlice: Slice = createSlice({
                 copy?.unsetAtom(action.payload)
                 state.ownerField = copy;
             } else {
-                // TODO notification
                 console.warn("Cannot unset own atoms when game is started")
+                NotificationService.getInstance()?.emitNotification("Cannot unset own atoms when game is started", ENotificationLevel.WARNING)
             }
         },
         unsetCompetitorAtom: (state: GameState, action: { payload: Vector, type: string }) => {
@@ -85,11 +94,13 @@ export const gameSlice: Slice = createSlice({
                     let copy = state.competitorField ? FieldData.clone(state.competitorField) : null;
                     copy?.unsetAtom(action.payload)
                     state.competitorField = copy;
-                } catch (e) {
+                } catch (e: any) {
                     console.warn(e)
+                    NotificationService.getInstance()?.emitNotification(e.toString(), ENotificationLevel.WARNING)
                 }
             } else {
                 console.warn("Cannot unset competitor atoms when game is not started or finished")
+                NotificationService.getInstance()?.emitNotification("Cannot unset competitor atoms when game is not started or finished", ENotificationLevel.WARNING)
             }
         },
 
@@ -129,7 +140,6 @@ export const gameSlice: Slice = createSlice({
         },
         setGuessedOrReal: (state: GameState, action: {payload: { atoms: Vector[], real: boolean, owner: boolean }, type: string}) => {
             const ownerMapping = action.payload.owner === state.isOwner;
-            console.log(ownerMapping, action.payload.owner, action.payload.real, state.isOwner, action.payload.atoms)
             if (ownerMapping && state.ownerField) {
                 let cloned = FieldData.clone(state.ownerField);
                 if (action.payload.real)

@@ -15,6 +15,9 @@ import {openPage} from "../store/pageSlice";
 import {EPage} from "../types/game/page/EPage";
 import {setWSService} from "../store/serviceSlice";
 import {initializeGame, setTurn} from "../store/gameSlice";
+import {Notification} from "../components/Notification";
+import {NotificationService} from "../services/NotificationService";
+import {ENotificationLevel} from "../types/game/ENotificationLevel";
 
 export function WaitCompetitorPage() {
     const dispatch: Dispatch<any> = useDispatch();
@@ -23,11 +26,9 @@ export function WaitCompetitorPage() {
     const initialized = useRef(false)
     useEffect(() => {
         if (!initialized.current) {
-            console.log("useEffect", gameId);
             initialized.current = true
             CreateGame()
                 .then((credentials: CredentialDTO) => {
-                    console.log(credentials)
                     dispatch(updateCredentials(credentials))
                     currentSettings && setSettings(currentSettings, credentials).then((settings: GameSettingsDTO) => {
                         dispatch(updateCredentials(settings.credentials))
@@ -36,12 +37,16 @@ export function WaitCompetitorPage() {
                     });
                     const ws_svc = new WSService(credentials.userId);
                     ws_svc.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (message, payload) => {
-                        console.log(message, payload);
                         dispatch(openPage(EPage.GamePage));
+                        NotificationService.getInstance()?.emitNotification("Competitor joined the game", ENotificationLevel.INFO)
                     });
                     ws_svc.Subscribe(dispatch)
                     dispatch(setWSService(ws_svc));
                     dispatch(setTurn(true));
+                })
+                .catch(reason => {
+                    NotificationService.getInstance()?.emitNotification("Error on creating the game", ENotificationLevel.ERROR)
+                    console.error(reason)
                 });
         }
     }, []);
@@ -63,6 +68,7 @@ export function WaitCompetitorPage() {
                     Game will start as soon as competitor joins...
                 </div>
             </div>
+            <Notification/>
         </div>
     );
 }

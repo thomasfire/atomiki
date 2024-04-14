@@ -1,5 +1,9 @@
 import React, {useState} from "react";
 import iconCopy from "../../assets/icon-copy.svg";
+import {useDispatch} from "react-redux";
+import {Dispatch} from "@reduxjs/toolkit";
+import {emitNotification} from "../store/notificationSlice";
+import {ENotificationLevel} from "../types/game/ENotificationLevel";
 
 enum CopyState {
     UNKNOWN = "bg-white hover:bg-gray-100",
@@ -9,6 +13,7 @@ enum CopyState {
 
 export function CopyButton({value, classes}: { value: string, classes: string }) {
     const [success, setSuccess] = useState(CopyState.UNKNOWN);
+    const dispatch: Dispatch<any> = useDispatch();
 
     const copyToClipboard = (text: string) => {
         try {
@@ -20,11 +25,13 @@ export function CopyButton({value, classes}: { value: string, classes: string })
                     setSuccess(CopyState.ERROR);
                     setTimeout(() => {setSuccess(CopyState.UNKNOWN)}, 3000);
                     console.warn("Copy to clipboard rejected: ", reason)
+                    dispatch(emitNotification({message: "Copy to clipboard failed. Ensure you are using HTTPS.", level: ENotificationLevel.ERROR, dispatch: dispatch}))
                 });
         } catch (e) {
             setSuccess(CopyState.ERROR);
             setTimeout(() => {setSuccess(CopyState.UNKNOWN)}, 3000);
             console.warn("Copy to clipboard error: ", e)
+            dispatch(emitNotification({message: "Copy to clipboard failed. Ensure you are using HTTPS.", level: ENotificationLevel.ERROR, dispatch: dispatch}))
         }
     };
 
