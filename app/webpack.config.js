@@ -59,8 +59,8 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js', '.jsx'],
     },
-    devtool: "inline-source-map",
-    mode: "development"
-    //devtool: false,
-    //mode: "production"
+    //devtool: "inline-source-map",
+    //mode: "development"
+    devtool: false,
+    mode: "production"
 };
