@@ -8,5 +8,5 @@ export interface GameState {
     gameFinished: boolean,
     otherStarted: boolean,
     otherFinished: boolean,
-    isOwner: boolean,
+    isOwner: boolean
 }

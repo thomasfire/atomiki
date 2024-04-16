@@ -1,7 +1,6 @@
 import {useDispatch} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
 import {setCompetitorAtom, setOwnAtom} from "../../store/gameSlice";
-import {IWSService} from "../../types/game/page/IWSService";
 import {Cell} from "../../types/game/view/Cell";
 
 const color_picker = (cell: Cell): string => {
@@ -17,13 +16,12 @@ const color_picker = (cell: Cell): string => {
     return "bg-white disabled:bg-gray-100 rounded"
 }
 
-export function Space(cell: Cell, i: number, j: number, owner: boolean, disabled: boolean, wsService: IWSService | null) {
+export function Space(cell: Cell, i: number, j: number, owner: boolean, disabled: boolean) {
     const dispatch: Dispatch<any> = useDispatch();
     const onClick = () => {
         if (owner) {
             dispatch(setOwnAtom({x: i, y: j}));
         } else {
-            wsService?.markCompetitorAtom({mark: true, coords: {x: i-1, y: j-1}})
             dispatch(setCompetitorAtom({x: i, y: j}));
         }
     }

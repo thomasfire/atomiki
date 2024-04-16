@@ -5,17 +5,17 @@ import {Field} from "../components/game/Field";
 import {Winner} from "../components/Winner";
 import {ResultsStats} from "../components/ResultsStats";
 import {Notification} from "../components/Notification";
+import {WSService} from "../services/WSService";
 
 export function ResultPage() {
     const ownField = useSelector((state: GameStorage) => state.game.ownerField);
     const competitorField = useSelector((state: GameStorage) => state.game.competitorField);
 
-    const wsService = useSelector((state: GameStorage) => state.service.ws_service);
     const initialized = useRef(false);
     useEffect(() => {
         if (!initialized.current) {
             initialized.current = true
-            wsService?.shutdown();
+            WSService.getInstance()?.shutdown();
         }
     }, []);
 

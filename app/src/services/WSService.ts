@@ -50,10 +50,17 @@ type GameSubscriber = {
     [id: string]: GameFn
 };
 
-async function delayedExecution(ms_wait: number) {
+async function delayedExecution(ms_wait: number): Promise<void> {
     return new Promise((resolve, _reject) => setTimeout(() => {
-        resolve("done")
+        resolve()
     }, ms_wait));
+}
+
+export async function inAsync(callback: ()=>void): Promise<void> {
+    return new Promise((resolve, _reject) => {
+        callback();
+        resolve();
+    });
 }
 
 function setGuessedAndRealAtoms(payload: AtomsMarkDTO | Trace | GameResults | null, dispatch: Dispatch<any>) {
@@ -86,6 +93,7 @@ function setGuessedAndRealAtoms(payload: AtomsMarkDTO | Trace | GameResults | nu
 }
 
 export class WSService implements IWSService {
+    private static instance: WSService | null;
     private client: Client;
     private readonly userId: string;
     private notifications: StompSubscription | undefined;
@@ -93,7 +101,7 @@ export class WSService implements IWSService {
     private notificationSubscribers: Array<NotificationSubscriber> = new Array<NotificationSubscriber>(NOTIFICATION_TYPES.OWNER_FINISHED.valueOf() + 1);
     private gameSubscribers: Array<GameSubscriber> = new Array<GameSubscriber>(SocketTypes.FULL_LOG.valueOf() + 1);
 
-    constructor(userId: string) {
+    private constructor(userId: string) {
         this.userId = userId;
         this.client = new Client({
             brokerURL: "ws://" + window.location.host + WS_GUIDE_URL,
@@ -112,6 +120,14 @@ export class WSService implements IWSService {
             this.gameSubscribers[i] = {};
         }
         this.client.activate();
+    }
+
+    public static init(userId: string) {
+        if (!WSService.instance) WSService.instance = new WSService(userId);
+    }
+
+    public static getInstance(): WSService | null {
+        return WSService.instance;
     }
 
     public subscribeToNotification(id: string, type: NOTIFICATION_TYPES, callback: NotificationFn) {

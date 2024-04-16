@@ -4,6 +4,7 @@ import {Field} from "../components/game/Field";
 import {LastMove} from "../components/game/LastMove";
 import {Logs} from "../components/game/Logs";
 import {Notification} from "../components/Notification";
+import {WSService} from "../services/WSService";
 
 export function GamePage() {
     const gameStarted = useSelector((state: GameStorage) => state.game.gameStarted);
@@ -12,14 +13,13 @@ export function GamePage() {
     const _isOtherFinished = useSelector((state: GameStorage) => state.game.otherFinished);
     const ownField = useSelector((state: GameStorage) => state.game.ownerField);
     const competitorField = useSelector((state: GameStorage) => state.game.competitorField);
-    const wsService = useSelector((state: GameStorage) => state.service.ws_service);
 
 
     const onStartGame = () => {
-        if (ownField) wsService?.setOwnAtoms(ownField.getAtoms())
+        if (ownField) WSService.getInstance()?.setOwnAtoms(ownField.getAtoms())
     }
     const onFinishGame = () => {
-        if (ownField) wsService?.finishGame()
+        if (ownField) WSService.getInstance()?.finishGame()
     }
 
     return (

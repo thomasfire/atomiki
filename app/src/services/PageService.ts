@@ -6,7 +6,6 @@ import {GameSettingsDTO} from "../types/transport/GameSettingsDTO";
 import {updateCredentials} from "../store/credentialSlice";
 import {updateCurrentSettings} from "../store/settingsSlice";
 import {WSService} from "./WSService";
-import {setWSService} from "../store/serviceSlice";
 import {initializeGame, setTurn} from "../store/gameSlice";
 import {NotificationService} from "./NotificationService";
 import {ENotificationLevel} from "../types/game/ENotificationLevel";
@@ -57,10 +56,10 @@ export class PageService {
             .then((gameSettingsDTO: GameSettingsDTO) => {
                 this.dispatch(updateCredentials(gameSettingsDTO.credentials))
                 this.dispatch(updateCurrentSettings(gameSettingsDTO.settings))
-                const ws_svc = new WSService(gameSettingsDTO.credentials.userId);
-                this.dispatch(setWSService(ws_svc));
+                WSService.init(gameSettingsDTO.credentials.userId)
+                const ws_svc = WSService.getInstance();
                 this.dispatch(initializeGame(gameSettingsDTO.settings));
-                ws_svc.Subscribe(this.dispatch)
+                ws_svc?.Subscribe(this.dispatch)
 
                 this.dispatch(openPage(EPage.GamePage))
             })
@@ -82,13 +81,13 @@ export class PageService {
                     NotificationService.getInstance()?.emitNotification("Error on applying settings", ENotificationLevel.ERROR)
                     console.error(reason)
                 });
-                const ws_svc = new WSService(credentials.userId);
-                ws_svc.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (_message, _payload) => {
+                WSService.init(credentials.userId)
+                const ws_svc = WSService.getInstance();
+                ws_svc?.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (_message, _payload) => {
                     this.dispatch(openPage(EPage.GamePage));
                     NotificationService.getInstance()?.emitNotification("Competitor joined the game", ENotificationLevel.INFO)
                 });
-                ws_svc.Subscribe(this.dispatch)
-                this.dispatch(setWSService(ws_svc));
+                ws_svc?.Subscribe(this.dispatch)
                 this.dispatch(setTurn(true));
                 this.dispatch(openPage(EPage.WaitCompetitorPage))
             })

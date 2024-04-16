@@ -10,7 +10,7 @@ export function TutorialPage() {
     return (
         <div className="w-full flex content-center justify-center align-middle">
             <div className="grid h-min self-center">
-                <div className={`bg-white text-gray-800 col-start-1 row-start-1 min-w-96 markdown w-3/4
+                <div className={`bg-white text-gray-800 col-start-1 row-start-1 min-w-72 markdown w-3/4
                     inline-block py-2 px-4 h-min self-center m-1 ${markStyles} justify-self-center`}>
                     <Markdown value={tutorial.default}/>
                 </div>

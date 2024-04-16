@@ -3,19 +3,24 @@ import {pageReducer} from "./pageSlice";
 import {joinReducer} from "./joinSlice";
 import {settingsReducer} from "./settingsSlice";
 import {credentialReducer} from "./credentialSlice";
-import {serviceReducer} from "./serviceSlice";
 import {gameReducer} from "./gameSlice";
 import {logReducer} from "./logSlice";
 import {resultReducer} from "./resultSlice";
 import {notificationReducer} from "./notificationSlice";
+import { enableMapSet } from 'immer'
 
-export default configureStore({
+{
+    enableMapSet();
+    console.log("enableMapSet();")
+}
+
+
+export default  configureStore({
     reducer: {
         page: pageReducer,
         join: joinReducer,
         settings: settingsReducer,
         credential: credentialReducer,
-        service: serviceReducer,
         game: gameReducer,
         log: logReducer,
         results: resultReducer,
@@ -23,7 +28,6 @@ export default configureStore({
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware({
         serializableCheck: {
-            ignoredActions: ["service/setWSService"],
             ignoredPaths: ["game.ownerField", "game.competitorField", "service.ws_service"]
         }
     })
