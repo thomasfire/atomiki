@@ -1,16 +1,24 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {useDispatch} from 'react-redux';
 import {Dispatch} from "@reduxjs/toolkit";
 import {setOwner} from "../store/gameSlice";
 import {NotificationService} from "../services/NotificationService";
 import {Notification} from "../components/Notification";
 import {PageService} from "../services/PageService";
+import {LoaderService} from "../services/LoaderService";
 
 export function IndexPage() {
     const dispatch: Dispatch<any> = useDispatch();
+    const initialized = useRef(false);
+
     useEffect(() => {
-        NotificationService.init(dispatch);
-        PageService.init(dispatch)
+        if (!initialized.current) {
+            initialized.current = true
+            NotificationService.init(dispatch);
+            PageService.init(dispatch);
+            LoaderService.init(dispatch);
+            LoaderService.getInstance()?.parseUrlParams();
+        }
     }, []);
     return (
         <div className="w-full h-full flex content-center justify-center align-middle">

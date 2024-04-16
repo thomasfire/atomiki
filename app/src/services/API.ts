@@ -11,3 +11,6 @@ export const WS_MAKE_MOVE = "/ws/make-move/";
 export const WS_MARK_ATOM = "/ws/mark-atom/";
 export const WS_FINISH = "/ws/finish/";
 export const WS_LOGS = "/ws/logs/";
+
+
+export const APP_JOIN_ID = "joinid";
