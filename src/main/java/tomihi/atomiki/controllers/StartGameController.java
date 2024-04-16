@@ -14,10 +14,10 @@ import tomihi.atomiki.models.GameState;
 import tomihi.atomiki.models.UserToGame;
 import tomihi.atomiki.repositories.GameRepository;
 import tomihi.atomiki.repositories.UserToGameRepository;
+import tomihi.atomiki.utils.UUIDHelper;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 
 @RestController
@@ -37,8 +37,8 @@ public class StartGameController {
     @PostMapping("/create")
     public CredentialDTO createNewGame() {
         // This method should just generate new credentials and put them into repo
-        String gameId = UUID.randomUUID().toString();
-        String ownerId = UUID.randomUUID().toString();
+        String gameId = UUIDHelper.generateUUID();
+        String ownerId = UUIDHelper.generateUUID();
 
         this.userToGameRepository.save(new UserToGame(ownerId, gameId));
 
@@ -59,7 +59,7 @@ public class StartGameController {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        String competitorId = UUID.randomUUID().toString();
+        String competitorId = UUIDHelper.generateUUID();
         existingState.setCompetitorId(competitorId);
 
         this.userToGameRepository.save(new UserToGame(competitorId, gameId));
