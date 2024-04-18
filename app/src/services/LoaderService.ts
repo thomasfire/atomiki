@@ -1,6 +1,6 @@
 import {Dispatch} from "@reduxjs/toolkit";
 import {PageService} from "./PageService";
-import {APP_JOIN_ID} from "./API";
+import {APP_JOIN_ID, APP_USER_ID} from "./API";
 
 export class LoaderService {
     private static instance: LoaderService | null;
@@ -21,7 +21,10 @@ export class LoaderService {
         const url = window.location.search;
         const searchParams = new URLSearchParams(url);
         const joinID = searchParams.get(APP_JOIN_ID);
-        if (joinID) {
+        const userID = searchParams.get(APP_USER_ID);
+        if (userID && joinID) {
+            PageService.getInstance()?.loginGame(userID, joinID)
+        } else if (joinID) {
             PageService.getInstance()?.joinGame(joinID);
         }
     }

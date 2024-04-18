@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import tomihi.atomiki.dto.CompetitorNotificationDTO;
 import tomihi.atomiki.dto.CredentialDTO;
 import tomihi.atomiki.dto.GameSettingsDTO;
+import tomihi.atomiki.dto.OwnGameStateDTO;
 import tomihi.atomiki.game.GameFactory;
 import tomihi.atomiki.game.GameSettings;
 import tomihi.atomiki.models.GameState;
@@ -74,23 +75,24 @@ public class StartGameController {
 
     private boolean checkAuthorization(GameState gameState, String userId) {
         return gameState.getOwnerId().equals(userId) ^
-                (gameState.getCompetitorId() != null && !gameState.getCompetitorId().equals(userId));
+                (gameState.getCompetitorId() != null && gameState.getCompetitorId().equals(userId));
     }
 
     @GetMapping("/login/{userId}/{gameId}")
-    public GameSettingsDTO loginExistingGame(@PathVariable String userId, @PathVariable String gameId) {
+    public OwnGameStateDTO loginExistingGame(@PathVariable String userId, @PathVariable String gameId) {
         // This method should verify game id and that the game is ongoing, and return game settings
         // which include the credential. This method is used on connection interruptions.
         // All the game log stuff will be in websocket service
 
         GameState existingState = this.gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        final boolean isOwner = existingState.getOwnerId().equals(userId);
 
         if (!this.checkAuthorization(existingState, userId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        return new GameSettingsDTO(new CredentialDTO(userId, gameId), existingState.getGameSettings());
+        return OwnGameStateDTO.fromGameState(existingState, isOwner);
     }
 
     @PostMapping("/set")

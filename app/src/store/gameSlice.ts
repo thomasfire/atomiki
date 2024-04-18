@@ -8,6 +8,8 @@ import {AtomsMarkDTO} from "../types/transport/AtomsMarkDTO";
 import {NotificationService} from "../services/NotificationService";
 import {ENotificationLevel} from "../types/game/ENotificationLevel";
 import {inAsync, WSService} from "../services/WSService";
+import {OwnGameStateDTO} from "../types/transport/OwnGameStateDTO";
+import {Status} from "../types/transport/Status";
 
 export const gameSlice: Slice = createSlice({
     name: 'join',
@@ -196,6 +198,47 @@ export const gameSlice: Slice = createSlice({
                 state.competitorField = cloned;
             }
         },
+        restoreGame: (state: GameState, action: { payload: OwnGameStateDTO, type: string }) => {
+            const ownGameStateDTO = action.payload;
+            state.ownerField = FieldData.emptyField(ownGameStateDTO.gameSettings);
+            state.competitorField = FieldData.emptyField(ownGameStateDTO.gameSettings);
+            ownGameStateDTO.ownerGame.field.atoms.forEach((value, _index) => {
+                state.ownerField?.setAtom(value)
+            })
+            ownGameStateDTO.ownerMarks?.markedAtoms.forEach((value, _index) => {
+                state.ownerField?.markAtom({mark: true, coords: {x: value.x - 1, y: value.y - 1}})
+            })
+            ownGameStateDTO.ownerGame.movesLog.logEntries.forEach((value, _index) => {
+                if (state.competitorField)
+                    state.competitorField.cells[value.startPoint.x+1][value.startPoint.y+1].used = true;
+            })
+            ownGameStateDTO.ownerGame.competitorMarks?.markedAtoms.forEach((value, _index) => {
+                state.competitorField?.setAtom(value)
+            })
+            state.ownerTurn = ownGameStateDTO.ownTurn;
+            state.isOwner = ownGameStateDTO.isOwner;
+            switch (ownGameStateDTO.ownerGame.status) {
+                case Status.STARTED:
+                    state.gameStarted = true
+                    break
+                case Status.SETTING:
+                    break
+                case Status.FINISHED:
+                    state.gameStarted = true
+                    state.gameFinished = true
+            }
+
+            switch (ownGameStateDTO.competitorStatus) {
+                case Status.STARTED:
+                    state.otherStarted = true
+                    break
+                case Status.SETTING:
+                    break
+                case Status.FINISHED:
+                    state.otherStarted = true
+                    state.otherFinished = true
+            }
+        },
     },
 })
 
@@ -203,7 +246,7 @@ export const {
     initializeGame, setOwnAtom, setCompetitorAtom, makeMovement,
     unsetOwnAtom, unsetCompetitorAtom, startGame, finishGame,
     setOtherStarted, setOtherFinished, setTrace, removeTrace,
-    setTurn, setMarked, setOwner, setGuessedOrReal
+    setTurn, setMarked, setOwner, setGuessedOrReal, restoreGame
 } = gameSlice.actions
 
 export const gameReducer = gameSlice.reducer;

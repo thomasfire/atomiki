@@ -1,6 +1,7 @@
 export const AVAILABLE_SETTINGS_URL = "/getAvailableSettings"
 export const CREATE_URL = "/create"
 export const JOIN_URL = "/join/"
+export const LOGIN_URL = "/login/"
 export const SET_URL = "/set"
 
 export const WS_GUIDE_URL = "/ws-guide";
@@ -14,3 +15,4 @@ export const WS_LOGS = "/ws/logs/";
 
 
 export const APP_JOIN_ID = "joinid";
+export const APP_USER_ID = "userid";

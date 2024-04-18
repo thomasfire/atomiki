@@ -1,18 +1,46 @@
 import {Dispatch} from "@reduxjs/toolkit";
 import {openPage} from "../store/pageSlice";
 import {EPage} from "../types/game/page/EPage";
-import {CreateGame, JoinGame} from "./CreateGame";
+import {CreateGame, JoinGame, LoginGame} from "./CreateGame";
 import {GameSettingsDTO} from "../types/transport/GameSettingsDTO";
 import {updateCredentials} from "../store/credentialSlice";
 import {updateCurrentSettings} from "../store/settingsSlice";
 import {WSService} from "./WSService";
-import {initializeGame, setTurn} from "../store/gameSlice";
+import {
+    initializeGame, restoreGame,
+    setTurn,
+} from "../store/gameSlice";
 import {NotificationService} from "./NotificationService";
 import {ENotificationLevel} from "../types/game/ENotificationLevel";
 import {CredentialDTO} from "../types/transport/CredentialDTO";
 import {setSettings} from "./SettingsReceiver";
 import {NOTIFICATION_TYPES} from "../types/transport/CompetitorNotificationDTO";
 import {GameSettings} from "../types/transport/GameSettings";
+import {APP_JOIN_ID, APP_USER_ID} from "./API";
+import {OwnGameStateDTO} from "../types/transport/OwnGameStateDTO";
+import {addToLog} from "../store/logSlice";
+import {Status} from "../types/transport/Status";
+
+function setUrlParameter(key: string, value: string) {
+    let newUrl = new URL(window.location.href);
+    newUrl.searchParams.set(key, value);
+    if (isSecureContext)
+        window.history.replaceState({}, "", newUrl.search);
+    //window.location.href = newUrl.href;
+    else
+        console.error("Context is not secure, cannot set URL")
+}
+
+function clearUrlParameters() {
+    let newUrl = new URL(window.location.href);
+    newUrl.searchParams.delete(APP_JOIN_ID);
+    newUrl.searchParams.delete(APP_USER_ID);
+    if (isSecureContext)
+        window.history.replaceState({}, "", newUrl.search);
+    else
+        console.error("Context is not secure, cannot set URL")
+}
+
 
 export class PageService {
     private static instance: PageService | null;
@@ -35,6 +63,7 @@ export class PageService {
     public openIndex() {
         this.dispatch(openPage(EPage.IndexPage))
     }
+
     public openTutorial() {
         this.dispatch(openPage(EPage.TutorialPage))
     }
@@ -56,6 +85,8 @@ export class PageService {
             .then((gameSettingsDTO: GameSettingsDTO) => {
                 this.dispatch(updateCredentials(gameSettingsDTO.credentials))
                 this.dispatch(updateCurrentSettings(gameSettingsDTO.settings))
+                setUrlParameter(APP_JOIN_ID, gameSettingsDTO.credentials.gameId)
+                setUrlParameter(APP_USER_ID, gameSettingsDTO.credentials.userId)
                 WSService.init(gameSettingsDTO.credentials.userId)
                 const ws_svc = WSService.getInstance();
                 this.dispatch(initializeGame(gameSettingsDTO.settings));
@@ -65,6 +96,39 @@ export class PageService {
             })
             .catch(reason => {
                 NotificationService.getInstance()?.emitNotification("Error on joining the game", ENotificationLevel.ERROR)
+                clearUrlParameters()
+                console.error(reason)
+            });
+    }
+
+    public loginGame(userID: string, joinID: string) {
+        LoginGame(userID, joinID)
+            .then((ownGameStateDTO: OwnGameStateDTO) => {
+                console.log(ownGameStateDTO)
+                if (ownGameStateDTO.competitorStatus === Status.FINISHED && ownGameStateDTO.ownerGame.status === Status.FINISHED) {
+                    NotificationService.getInstance()?.emitNotification("Game already closed", ENotificationLevel.WARNING)
+                    clearUrlParameters()
+                    return
+                } else {
+                    this.dispatch(openPage(EPage.GamePage));
+                }
+
+                this.dispatch(updateCredentials(ownGameStateDTO.credential))
+                this.dispatch(updateCurrentSettings(ownGameStateDTO.gameSettings))
+
+                this.dispatch(restoreGame(ownGameStateDTO))
+
+                ownGameStateDTO.ownerGame.movesLog.logEntries.forEach((value, _index) => {
+                    this.dispatch(addToLog(value));
+                })
+
+                WSService.init(ownGameStateDTO.credential.userId)
+                const ws_svc = WSService.getInstance();
+                ws_svc?.Subscribe(this.dispatch)
+            })
+            .catch(reason => {
+                NotificationService.getInstance()?.emitNotification("Error restoring the game", ENotificationLevel.ERROR)
+                clearUrlParameters()
                 console.error(reason)
             });
     }
@@ -74,6 +138,8 @@ export class PageService {
             .then((credentials: CredentialDTO) => {
                 this.dispatch(updateCredentials(credentials))
                 currentSettings && setSettings(currentSettings, credentials).then((settings: GameSettingsDTO) => {
+                    setUrlParameter(APP_JOIN_ID, settings.credentials.gameId)
+                    setUrlParameter(APP_USER_ID, settings.credentials.userId)
                     this.dispatch(updateCredentials(settings.credentials))
                     this.dispatch(updateCurrentSettings(settings.settings))
                     this.dispatch(initializeGame(settings.settings));
@@ -93,6 +159,7 @@ export class PageService {
             })
             .catch(reason => {
                 NotificationService.getInstance()?.emitNotification("Error on creating the game", ENotificationLevel.ERROR)
+                clearUrlParameters()
                 console.error(reason)
             });
     }
