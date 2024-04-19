@@ -8,11 +8,16 @@ public class Atom implements Space {
 
     @Override
     public boolean canPlaceAnotherObject(Space other) {
-        return false;
+        return other == null;
     }
 
     @Override
     public boolean isAtom() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Atom{}";
     }
 }

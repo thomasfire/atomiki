@@ -19,6 +19,27 @@ public class Stream implements Space {
 
     @Override
     public boolean canPlaceAnotherObject(Space other) {
-        return other.isAtomShield();
+        return other == null;
+    }
+
+    @Override
+    public String toString() {
+        return "Stream{" +
+                "direction=" + direction +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Stream stream = (Stream) o;
+        return direction.equals(stream.direction);
+    }
+
+    @Override
+    public int hashCode() {
+        return direction.hashCode();
     }
 }

@@ -10,4 +10,9 @@ public class Void implements Space {
     public boolean canPlaceAnotherObject(Space other) {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Void{}";
+    }
 }

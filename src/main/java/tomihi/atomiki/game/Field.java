@@ -11,9 +11,9 @@ public class Field {
 
     final private static Space[][] ATOM_STRUCTURE = new Space[][]{
                         // y = 0            y = 1                               y = 2
-            new Space[]{new AtomShield(), new Stream(Direction.DIRECTION_LEFT), new AtomShield()}, // x = 0
+            new Space[]{null, new Stream(Direction.DIRECTION_LEFT), null}, // x = 0
             new Space[]{new Stream(Direction.DIRECTION_UP), new Atom(), new Stream(Direction.DIRECTION_DOWN)}, // x = 1
-            new Space[]{new AtomShield(), new Stream(Direction.DIRECTION_RIGHT), new AtomShield()}, // x = 2
+            new Space[]{null, new Stream(Direction.DIRECTION_RIGHT), null}, // x = 2
     };
 
 
@@ -79,7 +79,8 @@ public class Field {
     private void setAtCoords(Coords coords, Space space) {
         if (isOutOfField(coords))
             throw new IndexOutOfBoundsException();
-        this.field[coords.getX()][coords.getY()] = space;
+        if (space != null)
+            this.field[coords.getX()][coords.getY()] = space;
     }
 
     private void setAtCoords(int x, int y, Space space) {

@@ -22,4 +22,28 @@ public class Direction implements Vector {
         //noinspection SuspiciousNameCombination
         return new Direction(y, x);
     }
+
+    @Override
+    public String toString() {
+        return "Direction{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Direction direction = (Direction) o;
+        return x == direction.x && y == direction.y;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        return result;
+    }
 }

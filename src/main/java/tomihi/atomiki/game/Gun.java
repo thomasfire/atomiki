@@ -31,11 +31,19 @@ public class Gun implements Space {
 
     @Override
     public boolean canPlaceAnotherObject(Space other) {
-        return false;
+        return other == null;
     }
 
     @Override
     public Electron createElectron() {
         return new Electron(this.ttl);
+    }
+
+    @Override
+    public String toString() {
+        return "Gun{" +
+                "direction=" + direction +
+                ", ttl=" + ttl +
+                '}';
     }
 }
