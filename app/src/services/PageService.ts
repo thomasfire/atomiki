@@ -138,8 +138,6 @@ export class PageService {
             .then((credentials: CredentialDTO) => {
                 this.dispatch(updateCredentials(credentials))
                 currentSettings && setSettings(currentSettings, credentials).then((settings: GameSettingsDTO) => {
-                    setUrlParameter(APP_JOIN_ID, settings.credentials.gameId)
-                    setUrlParameter(APP_USER_ID, settings.credentials.userId)
                     this.dispatch(updateCredentials(settings.credentials))
                     this.dispatch(updateCurrentSettings(settings.settings))
                     this.dispatch(initializeGame(settings.settings));
@@ -151,6 +149,8 @@ export class PageService {
                 const ws_svc = WSService.getInstance();
                 ws_svc?.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (_message, _payload) => {
                     this.dispatch(openPage(EPage.GamePage));
+                    setUrlParameter(APP_JOIN_ID, credentials.gameId)
+                    setUrlParameter(APP_USER_ID, credentials.userId)
                     NotificationService.getInstance()?.emitNotification("Competitor joined the game", ENotificationLevel.INFO)
                 });
                 ws_svc?.Subscribe(this.dispatch)
