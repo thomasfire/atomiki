@@ -104,7 +104,6 @@ export class PageService {
     public loginGame(userID: string, joinID: string) {
         LoginGame(userID, joinID)
             .then((ownGameStateDTO: OwnGameStateDTO) => {
-                console.log(ownGameStateDTO)
                 if (ownGameStateDTO.competitorStatus === Status.FINISHED && ownGameStateDTO.ownerGame.status === Status.FINISHED) {
                     NotificationService.getInstance()?.emitNotification("Game already closed", ENotificationLevel.WARNING)
                     clearUrlParameters()

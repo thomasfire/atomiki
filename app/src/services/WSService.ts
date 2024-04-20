@@ -104,7 +104,7 @@ export class WSService implements IWSService {
     private constructor(userId: string) {
         this.userId = userId;
         this.client = new Client({
-            brokerURL: "ws://" + window.location.host + WS_GUIDE_URL,
+            brokerURL: "wss://" + window.location.host + WS_GUIDE_URL,
             onConnect: _frame => {
                 this.notifications = this.client.subscribe(NOTIFICATION_TOPIC + this.userId, (message: Message) => this.onNotification(message));
                 this.game = this.client.subscribe(GAME_TOPIC + this.userId, (message: Message) => this.onGame(message));

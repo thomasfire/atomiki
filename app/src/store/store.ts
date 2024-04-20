@@ -11,7 +11,6 @@ import { enableMapSet } from 'immer'
 
 {
     enableMapSet();
-    console.log("enableMapSet();")
 }
 
 

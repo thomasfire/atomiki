@@ -44,7 +44,6 @@ export async function LoginGame(userId: string, gameId: string): Promise<OwnGame
         }
     }).then(async (value: Response) => {
         const json = await value.json();
-        console.log(json)
         if (!value.ok) {
             console.error(json)
             throw Error(json)
