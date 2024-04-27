@@ -1,6 +1,6 @@
 import {Client, Message, StompSubscription} from '@stomp/stompjs';
 import {
-    GAME_TOPIC,
+    GAME_TOPIC, isHttps,
     NOTIFICATION_TOPIC,
     WS_FINISH,
     WS_GUIDE_URL,
@@ -104,7 +104,7 @@ export class WSService implements IWSService {
     private constructor(userId: string) {
         this.userId = userId;
         this.client = new Client({
-            brokerURL: "wss://" + window.location.host + WS_GUIDE_URL,
+            brokerURL: (isHttps() ? "wss://" : "ws://") + window.location.host + WS_GUIDE_URL,
             onConnect: _frame => {
                 this.notifications = this.client.subscribe(NOTIFICATION_TOPIC + this.userId, (message: Message) => this.onNotification(message));
                 this.game = this.client.subscribe(GAME_TOPIC + this.userId, (message: Message) => this.onGame(message));
