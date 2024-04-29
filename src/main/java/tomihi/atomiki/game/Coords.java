@@ -1,8 +1,8 @@
 package tomihi.atomiki.game;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class Coords implements Vector {
     int x;
     int y;

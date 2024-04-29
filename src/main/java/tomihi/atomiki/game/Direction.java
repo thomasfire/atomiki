@@ -1,8 +1,8 @@
 package tomihi.atomiki.game;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class Direction implements Vector {
     public final static Direction NULL_DIRECTION = new Direction(0, 0);
     public final static Direction DIRECTION_UP = new Direction(0, -1);
