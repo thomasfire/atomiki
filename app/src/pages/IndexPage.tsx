@@ -20,14 +20,6 @@ export function IndexPage() {
                     New game
                 </button>
                 <button onClick={() => {
-                    PageService.getInstance()?.openJoin()
-                    dispatch(setOwner(false))
-                }}
-                        className="bg-red-500 hover:bg-red-700 text-white col-start-1 row-start-2
-                        font-bold py-2 px-4 rounded h-min self-center m-1">
-                    Join existing game
-                </button>
-                <button onClick={() => {
                     PageService.getInstance()?.openTutorial()
                 }}
                         className="bg-emerald-500 hover:bg-emerald-700 text-white col-start-1 row-start-3

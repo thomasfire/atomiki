@@ -16,6 +16,7 @@ export const WS_LOGS = "/ws/logs/";
 
 export const APP_JOIN_ID = "joinid";
 export const APP_USER_ID = "userid";
+export const APP_TUTORIAL = "tutorial";
 
 export function isHttps() {
     return (document.location.protocol == 'https:');

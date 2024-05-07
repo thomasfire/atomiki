@@ -33,3 +33,4 @@ build/
 .vscode/
 /src/main/resources/static/atomiki.bundle.js
 /atomiki.log*
+/src/main/resources/templates/index.html

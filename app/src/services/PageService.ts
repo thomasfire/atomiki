@@ -16,17 +16,19 @@ import {CredentialDTO} from "../types/transport/CredentialDTO";
 import {setSettings} from "./SettingsReceiver";
 import {NOTIFICATION_TYPES} from "../types/transport/CompetitorNotificationDTO";
 import {GameSettings} from "../types/transport/GameSettings";
-import {APP_JOIN_ID, APP_USER_ID} from "./API";
+import {APP_JOIN_ID, APP_TUTORIAL, APP_USER_ID} from "./API";
 import {OwnGameStateDTO} from "../types/transport/OwnGameStateDTO";
 import {addToLog} from "../store/logSlice";
 import {Status} from "../types/transport/Status";
+import Dict = NodeJS.Dict;
 
-function setUrlParameter(key: string, value: string) {
+function setUrlParameters(dict: Dict<string>) {
     let newUrl = new URL(window.location.href);
-    newUrl.searchParams.set(key, value);
+    Object.entries(dict).forEach(([key, value]) => {
+        (key && value) ? newUrl.searchParams.set(key, value) : null;
+    })
     if (isSecureContext)
-        window.history.replaceState({}, "", newUrl.search);
-    //window.location.href = newUrl.href;
+        window.history.pushState({}, "", newUrl.search);
     else
         console.error("Context is not secure, cannot set URL")
 }
@@ -35,8 +37,9 @@ function clearUrlParameters() {
     let newUrl = new URL(window.location.href);
     newUrl.searchParams.delete(APP_JOIN_ID);
     newUrl.searchParams.delete(APP_USER_ID);
+    newUrl.searchParams.delete(APP_TUTORIAL);
     if (isSecureContext)
-        window.history.replaceState({}, "", newUrl.search);
+        window.history.pushState({}, "", "/" + newUrl.search);
     else
         console.error("Context is not secure, cannot set URL")
 }
@@ -60,16 +63,14 @@ export class PageService {
         return PageService.instance;
     }
 
-    public openIndex() {
+    public openIndex(clearUrl: boolean) {
         this.dispatch(openPage(EPage.IndexPage))
+        if (clearUrl) clearUrlParameters()
     }
 
     public openTutorial() {
         this.dispatch(openPage(EPage.TutorialPage))
-    }
-
-    public openJoin() {
-        this.dispatch(openPage(EPage.JoinPage))
+        setUrlParameters({[APP_TUTORIAL]: "true"})
     }
 
     public openSettings() {
@@ -85,8 +86,10 @@ export class PageService {
             .then((gameSettingsDTO: GameSettingsDTO) => {
                 this.dispatch(updateCredentials(gameSettingsDTO.credentials))
                 this.dispatch(updateCurrentSettings(gameSettingsDTO.settings))
-                setUrlParameter(APP_JOIN_ID, gameSettingsDTO.credentials.gameId)
-                setUrlParameter(APP_USER_ID, gameSettingsDTO.credentials.userId)
+                setUrlParameters({
+                    [APP_USER_ID]: gameSettingsDTO.credentials.userId,
+                    [APP_JOIN_ID]: gameSettingsDTO.credentials.gameId
+                })
                 WSService.init(gameSettingsDTO.credentials.userId)
                 const ws_svc = WSService.getInstance();
                 this.dispatch(initializeGame(gameSettingsDTO.settings));
@@ -148,8 +151,7 @@ export class PageService {
                 const ws_svc = WSService.getInstance();
                 ws_svc?.subscribeToNotification("wait for competitor to join", NOTIFICATION_TYPES.COMPETITOR_JOINED, (_message, _payload) => {
                     this.dispatch(openPage(EPage.GamePage));
-                    setUrlParameter(APP_JOIN_ID, credentials.gameId)
-                    setUrlParameter(APP_USER_ID, credentials.userId)
+                    setUrlParameters({[APP_USER_ID]: credentials.userId, [APP_JOIN_ID]: credentials.gameId})
                     NotificationService.getInstance()?.emitNotification("Competitor joined the game", ENotificationLevel.INFO)
                 });
                 ws_svc?.Subscribe(this.dispatch)
