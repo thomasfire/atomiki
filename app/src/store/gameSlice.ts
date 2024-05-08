@@ -12,7 +12,7 @@ import {OwnGameStateDTO} from "../types/transport/OwnGameStateDTO";
 import {Status} from "../types/transport/Status";
 
 export const gameSlice: Slice = createSlice({
-    name: 'join',
+    name: 'game',
     initialState: {
         ownerField: null,
         competitorField: null,

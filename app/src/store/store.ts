@@ -1,6 +1,5 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {pageReducer} from "./pageSlice";
-import {joinReducer} from "./joinSlice";
 import {settingsReducer} from "./settingsSlice";
 import {credentialReducer} from "./credentialSlice";
 import {gameReducer} from "./gameSlice";
@@ -17,7 +16,6 @@ import { enableMapSet } from 'immer'
 export default  configureStore({
     reducer: {
         page: pageReducer,
-        join: joinReducer,
         settings: settingsReducer,
         credential: credentialReducer,
         game: gameReducer,
