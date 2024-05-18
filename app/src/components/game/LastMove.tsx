@@ -9,13 +9,13 @@ export function LastMove() {
         <div>
             <span>
             {
-                lastMoved && field && field.cells[lastMoved.x + 1][lastMoved.y + 1].circleNo
+                lastMoved && field && field.cells[lastMoved.x][lastMoved.y].circleNo
             }
             </span>
             <span> - </span>
             <span>
             {
-                arrivedTo && field && field.cells[arrivedTo.x + 1][arrivedTo.y + 1].circleNo
+                arrivedTo && field && field.cells[arrivedTo.x][arrivedTo.y].circleNo
             }
             </span>
         </div>

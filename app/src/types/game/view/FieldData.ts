@@ -88,7 +88,7 @@ export class FieldData {
         this.cells.forEach((row, i) => {
             row.forEach((cell, j) => {
                 if (cell.cellType == CellType.ATOM) {
-                    result.push({x: i - 1, y: j - 1})
+                    result.push({x: i, y: j})
                 }
             })
         })
@@ -98,11 +98,11 @@ export class FieldData {
     public setTrace(trace: Trace): void {
         let lastCoords = trace.trace[0];
         trace.trace.slice(1).forEach((coords: Vector) => {
-            if (this.cells[coords.x + 1][coords.y + 1].cellType === CellType.VOID) {
-                this.cells[coords.x + 1][coords.y + 1] = Cell.createTrace({
+            if (this.cells[coords.x][coords.y].cellType === CellType.VOID) {
+                this.cells[coords.x][coords.y] = Cell.createTrace({
                     x: coords.x - lastCoords.x,
                     y: coords.y - lastCoords.y
-                }, this.cells[coords.x + 1][coords.y + 1].marked);
+                }, this.cells[coords.x][coords.y].marked);
             }
             lastCoords = coords;
         });
@@ -119,7 +119,7 @@ export class FieldData {
     }
 
     public markAtom(atomsMark: AtomsMarkDTO): void {
-        this.cells[atomsMark.coords.x + 1][atomsMark.coords.y + 1].marked = atomsMark.mark;
+        this.cells[atomsMark.coords.x][atomsMark.coords.y].marked = atomsMark.mark;
     }
 
     public markGuessed(guessed: Vector[]): void {

@@ -74,7 +74,7 @@ export const gameSlice: Slice = createSlice({
                     inAsync(() => {
                         WSService.getInstance()?.markCompetitorAtom({
                             mark: true,
-                            coords: {x: action.payload.x - 1, y: action.payload.y - 1}
+                            coords: {x: action.payload.x, y: action.payload.y}
                         })
                     })
                 } catch (e: any) {
@@ -106,7 +106,7 @@ export const gameSlice: Slice = createSlice({
                     inAsync(() => {
                         WSService.getInstance()?.markCompetitorAtom({
                             mark: false,
-                            coords: {x: action.payload.x - 1, y: action.payload.y - 1}
+                            coords: {x: action.payload.x, y: action.payload.y}
                         })
                     })
                 } catch (e: any) {
@@ -150,8 +150,8 @@ export const gameSlice: Slice = createSlice({
                 inAsync(() => {
                     WSService.getInstance()?.makeMovement({
                         coords: {
-                            x: action.payload.x - 1,
-                            y: action.payload.y - 1
+                            x: action.payload.x,
+                            y: action.payload.y
                         }
                     })
                 })
@@ -206,11 +206,11 @@ export const gameSlice: Slice = createSlice({
                 state.ownerField?.setAtom(value)
             })
             ownGameStateDTO.ownerMarks?.markedAtoms.forEach((value, _index) => {
-                state.ownerField?.markAtom({mark: true, coords: {x: value.x - 1, y: value.y - 1}})
+                state.ownerField?.markAtom({mark: true, coords: {x: value.x, y: value.y}})
             })
             ownGameStateDTO.ownerGame.movesLog.logEntries.forEach((value, _index) => {
                 if (state.competitorField)
-                    state.competitorField.cells[value.startPoint.x+1][value.startPoint.y+1].used = true;
+                    state.competitorField.cells[value.startPoint.x][value.startPoint.y].used = true;
             })
             ownGameStateDTO.ownerGame.competitorMarks?.markedAtoms.forEach((value, _index) => {
                 state.competitorField?.setAtom(value)

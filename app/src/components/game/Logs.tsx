@@ -10,7 +10,7 @@ export function Logs() {
                         border-gray-200
                        border-solid border-2 focus-visible:border-gray-300
                        focus:border-gray-300 focus-visible:outline-none" value={field ? logs.logEntries.map(((item: LogEntry) => {
-            return `${field.cells[item.startPoint.x + 1][item.startPoint.y + 1].circleNo?.toString()} - ${item.endPoint && field.cells[item.endPoint.x + 1][item.endPoint.y + 1].circleNo?.toString()}`
+            return `${field.cells[item.startPoint.x][item.startPoint.y].circleNo?.toString()} - ${item.endPoint && field.cells[item.endPoint.x][item.endPoint.y].circleNo?.toString()}`
         })).join("\n") : ""}/>
     );
 }

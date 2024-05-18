@@ -44,7 +44,7 @@ export function Field({owner, fieldData}: { owner: boolean, fieldData: FieldData
                         {row.map((cell: Cell, j: number) => {
                             return <td className="h-6 w-6 min-w-6 max-w-6 min-h-6 max-h-6"
                                        key={"row_" + owner + " " + i + "col" + j}>
-                                {getCell(cell, i, j, owner, disabled, ownerTurn, (arrivedTo?.x == i - 1 && arrivedTo.y == j - 1) || (lastMoved?.x == i - 1 && lastMoved.y == j - 1))}
+                                {getCell(cell, i, j, owner, disabled, ownerTurn, (arrivedTo?.x == i && arrivedTo.y == j) || (lastMoved?.x == i && lastMoved.y == j))}
                             </td>
                         })}
                     </tr>
