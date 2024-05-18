@@ -16,19 +16,17 @@ public class CompetitorMarks {
     }
 
     public void addMark(Coords coords) throws AtomsOverflowException {
-        Coords trueCoords = Field.innerToFullCoords(coords);
-        if (markedAtoms.contains(trueCoords)) return;
+        if (markedAtoms.contains(coords)) return;
         if (markedAtoms.size() >= maxSize) {
             throw new AtomsOverflowException();
         }
-        markedAtoms.add(trueCoords);
+        markedAtoms.add(coords);
     }
 
     public void removeMark(Coords coords) {
-        Coords trueCoords = Field.innerToFullCoords(coords);
-        if (!markedAtoms.contains(trueCoords)) {
+        if (!markedAtoms.contains(coords)) {
             throw new IndexOutOfBoundsException();
         }
-        markedAtoms.remove(trueCoords);
+        markedAtoms.remove(coords);
     }
 }

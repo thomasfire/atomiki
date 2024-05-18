@@ -24,7 +24,7 @@ public class CompressedField {
     public Field toField(GameSettings settings) throws ImpossibleAtomLocationException, AtomsOverflowException {
         Field field = new Field(settings);
         for (Coords atom : this.atoms) {
-            field.setAtom(Field.fullToInnerCoords(atom));
+            field.setAtom(atom);
         }
         return field;
     }

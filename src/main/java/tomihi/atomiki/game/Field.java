@@ -10,7 +10,7 @@ public class Field {
     private int atomsCount = 0;
 
     final private static Space[][] ATOM_STRUCTURE = new Space[][]{
-                        // y = 0            y = 1                               y = 2
+            // y = 0            y = 1                               y = 2
             new Space[]{null, new Stream(Direction.DIRECTION_LEFT), null}, // x = 0
             new Space[]{new Stream(Direction.DIRECTION_UP), new Atom(), new Stream(Direction.DIRECTION_DOWN)}, // x = 1
             new Space[]{null, new Stream(Direction.DIRECTION_RIGHT), null}, // x = 2
@@ -29,28 +29,25 @@ public class Field {
         }
 
         for (int i = 1; i < fieldEnd; i++) {
-            this.setAtCoords(0, i,  new Gun(Direction.DIRECTION_RIGHT, electronTTL));
-            this.setAtCoords(i, 0,  new Gun(Direction.DIRECTION_DOWN, electronTTL));
-            this.setAtCoords(fieldEnd, i,  new Gun(Direction.DIRECTION_LEFT, electronTTL));
-            this.setAtCoords(i, fieldEnd,  new Gun(Direction.DIRECTION_UP, electronTTL));
+            this.setAtCoords(0, i, new Gun(Direction.DIRECTION_RIGHT, electronTTL));
+            this.setAtCoords(i, 0, new Gun(Direction.DIRECTION_DOWN, electronTTL));
+            this.setAtCoords(fieldEnd, i, new Gun(Direction.DIRECTION_LEFT, electronTTL));
+            this.setAtCoords(i, fieldEnd, new Gun(Direction.DIRECTION_UP, electronTTL));
         }
     }
 
-    /**
-     * Accepts coordinates in inner way, i.e. stripped from guns.
-     */
     public void setAtom(Coords atomCoords) throws ImpossibleAtomLocationException, AtomsOverflowException {
-        if (atomCoords.getX() < 0
-                || atomCoords.getY() < 0
-                || atomCoords.getX() >= this.gameSettings.getFieldSize()
-                || atomCoords.getY() >= this.gameSettings.getFieldSize()) {
-            throw new ImpossibleAtomLocationException("Coordinates are out of field");
+        if (atomCoords.getX() < 1
+                || atomCoords.getY() < 1
+                || atomCoords.getX() >= this.gameSettings.getFieldSize() + 1
+                || atomCoords.getY() >= this.gameSettings.getFieldSize() + 1) {
+            throw new ImpossibleAtomLocationException(String.format("Coordinates are out of field: %d:%d", atomCoords.getX(), atomCoords.getY()));
         } else if (atomsCount >= gameSettings.getAtomsMaxCount()) {
             throw new AtomsOverflowException();
         }
         for (int i = 0; i <= 2; i++) {
             for (int j = 0; j <= 2; j++) {
-                if (!this.atCoords(atomCoords.addMovement(new Direction(i, j))).canPlaceAnotherObject(ATOM_STRUCTURE[i][j]))
+                if (!this.atCoords(atomCoords.addMovement(new Direction(i - 1, j - 1))).canPlaceAnotherObject(ATOM_STRUCTURE[i][j]))
                     throw new ImpossibleAtomLocationException(String.format("Another atom is too close, existing: %d:%d, %d:%d",
                             i, j, atomCoords.getX(), atomCoords.getY()));
             }
@@ -60,7 +57,7 @@ public class Field {
 
         for (int i = 0; i <= 2; i++) {
             for (int j = 0; j <= 2; j++) {
-                this.setAtCoords(atomCoords.addMovement(new Direction(i, j)), ATOM_STRUCTURE[i][j]);
+                this.setAtCoords(atomCoords.addMovement(new Direction(i - 1, j - 1)), ATOM_STRUCTURE[i][j]);
             }
         }
     }
@@ -91,12 +88,12 @@ public class Field {
      * Accepts coordinates in shifted way, i.e. with -1 or overflown
      */
     public MoveResult processShoot(Coords shootCords) throws WrongActionForCoords {
-        if (shootCords.getX() < -1 || shootCords.getY() < -1
-                || shootCords.getX() > this.gameSettings.getFieldSize() + 1
-                || shootCords.getY() > this.gameSettings.getFieldSize() + 1) {
+        if (shootCords.getX() < 0 || shootCords.getY() < 0
+                || shootCords.getX() > this.gameSettings.getFieldSize() + 2
+                || shootCords.getY() > this.gameSettings.getFieldSize() + 2) {
             throw new IllegalArgumentException("Coords out of the field");
         }
-        Coords coords = innerToFullCoords(shootCords);
+        Coords coords = shootCords;
         Gun gun = (Gun) this.atCoords(coords);
         // Null pointer exception should be fine here
         Electron electron = gun.createElectron();
@@ -105,24 +102,15 @@ public class Field {
         }
 
         Trace trace = new Trace();
-        trace.addMovement(fullToInnerCoords(coords));
+        trace.addMovement(coords);
         Direction direction;
         Space bufferSpace = gun;
         while (!(direction = electron.makeMove(bufferSpace)).equals(Direction.NULL_DIRECTION)) {
             coords = coords.addMovement(direction);
-            trace.addMovement(fullToInnerCoords(coords));
+            trace.addMovement(coords);
             bufferSpace = this.atCoords(coords);
         }
 
         return new MoveResult(trace, this.atCoords(coords).canRegisterElectronDeath());
     }
-
-    public static Coords fullToInnerCoords(Coords coords) {
-        return new Coords(coords.getX() - 1, coords.getY() - 1);
-    }
-
-    public static Coords innerToFullCoords(Coords coords) {
-        return new Coords(coords.getX() + 1, coords.getY() + 1);
-    }
-
 }
