@@ -29,9 +29,8 @@ Share it with you competitor in your favorite way and wait until he joins you.
 
 ## Join a game
 
-Your competitor invited you for a duel and threw a game ID to you.
-Press `Join existing game` and paste the game ID into the text field. 
-Once done, press `Join game` to start the game.
+Your competitor invited you for a duel and threw a link with game ID to you.
+Open it, and you will automatically enter the game.
 
 ## Next steps
 
