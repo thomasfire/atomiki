@@ -2,6 +2,7 @@ let Stomp = require("stompjs");
 const assert = require("assert");
 
 const baseURL = "http://localhost:8080"
+const waitDelay = 100;
 
 async function makeRequest(endpoint, method, body) {
     return fetch(baseURL + endpoint, {
@@ -105,14 +106,14 @@ async function main() {
             await delayedExecution(() => {
                 assert.strictEqual(competitorNotifications.at(-1).type, "COMPETITOR_SET")
                 assert.deepEqual(ownerGame.at(-1).payload, OWNER_COORDS_LIST)
-            }, 10);
+            }, waitDelay);
             console.info("SET OWNER ATOMS OK");
 
             stompClient.send("/ws/set-own-atoms/" + competitorId, {}, JSON.stringify(COMPETITOR_COORDS_LIST));
             await delayedExecution(() => {
                 assert.strictEqual(ownerNotifications.at(-1).type, "COMPETITOR_SET")
                 assert.deepEqual(competitorGame.at(-1).payload, COMPETITOR_COORDS_LIST)
-            }, 10);
+            }, waitDelay);
             console.info("SET COMPETITOR ATOMS OK");
 
             stompClient.send("/ws/make-move/" + ownerId, {}, JSON.stringify({
@@ -133,7 +134,7 @@ async function main() {
                         "y": 1
                     }, {"x": 5, "y": 2}, {"x": 6, "y": 2}, {"x": 7, "y": 2}, {"x": 8, "y": 2}, {"x": 9, "y": 2}]
                 });
-            }, 10);
+            }, waitDelay);
             console.info("OWNER MADE MOVE OK");
 
             stompClient.send("/ws/make-move/" + competitorId, {}, JSON.stringify({
@@ -154,7 +155,7 @@ async function main() {
                         "y": 7
                     }, {"x": 5, "y": 6}, {"x": 4, "y": 6}]
                 });
-            }, 10);
+            }, waitDelay);
             console.info("COMPETITOR MADE MOVE OK");
 
             const OWNER_GUESS = { // this dude is right
@@ -172,8 +173,8 @@ async function main() {
                 mark: true
             };
 
-            await delayedExecution(() => stompClient.send("/ws/mark-atom/" + ownerId, {}, JSON.stringify(OWNER_GUESS)), 10);
-            await delayedExecution(() => stompClient.send("/ws/mark-atom/" + competitorId, {}, JSON.stringify(COMPETITOR_GUESS)), 10);
+            await delayedExecution(() => stompClient.send("/ws/mark-atom/" + ownerId, {}, JSON.stringify(OWNER_GUESS)), waitDelay);
+            await delayedExecution(() => stompClient.send("/ws/mark-atom/" + competitorId, {}, JSON.stringify(COMPETITOR_GUESS)), waitDelay);
 
             await delayedExecution(() => {
                 assert.deepEqual(ownerGame.at(-1).payload, OWNER_GUESS);
@@ -183,11 +184,11 @@ async function main() {
                 // basically they just exchanged each other's guess info
                 assert.deepEqual(ownerNotifications.at(-1).payload, COMPETITOR_GUESS);
                 assert.deepEqual(competitorNotifications.at(-1).payload, OWNER_GUESS);
-            }, 10);
+            }, waitDelay);
             console.info("OWNER AND COMPETITOR MARKED EACH OTHERS ATOMS");
 
             stompClient.send("/ws/finish/" + ownerId, {}, "");
-            await delayedExecution(() => stompClient.send("/ws/finish/" + competitorId, {}, ""), 10); // TODO fix simultaneous requests
+            await delayedExecution(() => stompClient.send("/ws/finish/" + competitorId, {}, ""), waitDelay); // TODO fix simultaneous requests
 
             const EXPECTED_RESULT = {
                 "ownerAtoms": [...OWNER_COORDS_LIST.coordsList],
@@ -202,7 +203,7 @@ async function main() {
             await delayedExecution(() => {
                 assert.deepEqual(ownerNotifications.at(-1).payload, EXPECTED_RESULT)
                 assert.strictEqual(ownerNotifications.at(-1).type, "COMPETITOR_FINISHED")
-            }, 10);
+            }, waitDelay);
             console.info("GAME SUCCESSFULLY FINISHED AND EVERYBODY KNOWS RESULTS OK");
 
 
