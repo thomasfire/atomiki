@@ -13,14 +13,18 @@ public class CompressedUserGame {
     private CompressedField field;
     private CompetitorMarks competitorMarks;
 
-    public CompressedUserGame(UserGame userGame) {
+    private CompressedUserGame(UserGame userGame) {
         this.status = userGame.getStatus();
-        this.movesLog = new CompressedMovesLog(userGame.getMovesLog());
-        this.field = new CompressedField(userGame.getField());
+        this.movesLog = CompressedMovesLog.fromMovesLog(userGame.getMovesLog());
+        this.field = CompressedField.fromField(userGame.getField());
         this.competitorMarks = userGame.getCompetitorMarks();
     }
 
     public CompressedUserGame() {
+    }
+
+    public static CompressedUserGame fromUserGame(UserGame userGame) {
+        return new CompressedUserGame(userGame);
     }
 
     public UserGame toUserGame(GameSettings gameSettings) throws WrongActionForCoords, ImpossibleAtomLocationException, AtomsOverflowException {

@@ -14,11 +14,15 @@ public class CompressedField {
     private List<Coords> atoms = new ArrayList<>();
     private int fantomData = 42;
 
-    public CompressedField(Field field) {
+    private CompressedField(Field field) {
         this.atoms = extractAtomsFromField(field);
     }
 
     public CompressedField() {
+    }
+
+    public static CompressedField fromField(Field field) {
+        return new CompressedField(field);
     }
 
     public Field toField(GameSettings settings) throws ImpossibleAtomLocationException, AtomsOverflowException {

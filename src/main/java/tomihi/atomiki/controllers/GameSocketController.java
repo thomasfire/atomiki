@@ -63,7 +63,7 @@ public class GameSocketController {
 
         game.startGame(isOwner);
 
-        final GameState newGameState = new GameState(initialState, game);
+        final GameState newGameState = GameState.fromPreviousStateAndGame(initialState, game);
         this.gameRepository.save(newGameState);
 
         this.simpMessagingTemplate.convertAndSend(DESTINATION_SELF + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.ATOM_SET, atomsSetDTO));
@@ -88,7 +88,7 @@ public class GameSocketController {
         LogEntry logEntry = game.getMovesLog(isOwner).getLogEntries().getLast();
         Trace trace = moveResult.getTrace();
 
-        final GameState newGameState = new GameState(initialState, game);
+        final GameState newGameState = GameState.fromPreviousStateAndGame(initialState, game);
         this.gameRepository.save(newGameState);
 
         // Rick and Dick were about to get their salary.
@@ -116,7 +116,7 @@ public class GameSocketController {
             game.unmarkAtom(atomsMarkDTO.getCoords(), isOwner);
         }
 
-        final GameState newGameState = new GameState(initialState, game);
+        final GameState newGameState = GameState.fromPreviousStateAndGame(initialState, game);
         this.gameRepository.save(newGameState);
 
         this.simpMessagingTemplate.convertAndSend(DESTINATION_SELF + userId, new SocketTypeWrapper(SocketTypeWrapper.SocketTypes.ATOM_MARK, atomsMarkDTO));
@@ -137,7 +137,7 @@ public class GameSocketController {
 
         game.finishGame(isOwner);
 
-        final GameState newGameState = new GameState(initialState, game);
+        final GameState newGameState = GameState.fromPreviousStateAndGame(initialState, game);
         this.gameRepository.save(newGameState);
 
         GameResults gameResults = game.hasBothFinished() ? game.getGameResults() : null;

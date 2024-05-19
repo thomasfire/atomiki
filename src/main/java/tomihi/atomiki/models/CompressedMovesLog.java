@@ -16,8 +16,12 @@ public class CompressedMovesLog {
     public CompressedMovesLog() {
     }
 
-    public CompressedMovesLog(MovesLog movesLog) {
+    private CompressedMovesLog(MovesLog movesLog) {
         this.logEntries = movesLog.getLogEntries();
+    }
+
+    public static CompressedMovesLog fromMovesLog(MovesLog movesLog) {
+        return new CompressedMovesLog(movesLog);
     }
 
     public MovesLog toMovesLog() throws WrongActionForCoords {

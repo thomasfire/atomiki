@@ -27,35 +27,33 @@ public class GameState {
         this.setGameSettings(settings);
         UserGame ownerGame = new UserGame(this.getGameSettings());
         UserGame competitorGame = new UserGame(this.getGameSettings());
-        this.setOwnerGame(new CompressedUserGame(ownerGame));
-        this.setCompetitorGame(new CompressedUserGame(competitorGame));
+        this.setOwnerGame(CompressedUserGame.fromUserGame(ownerGame));
+        this.setCompetitorGame(CompressedUserGame.fromUserGame(competitorGame));
     }
 
     public String getOtherUser(boolean isOwner) {
         return isOwner ? this.competitorId : this.ownerId;
     }
 
-    public GameState(String id, String ownerId, String competitorId, Game game) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.competitorId = competitorId;
-        this.gameSettings = game.getGameSettings();
-        this.ownerGame = new CompressedUserGame(game.getOwner());
-        this.competitorGame = new CompressedUserGame(game.getCompetitor());
-        this.movesCounter = game.getMovesCounter();
+    public static GameState fromPreviousStateAndGame(GameState previous, Game game) {
+        return new GameState(previous, game);
     }
 
-    public GameState(GameState previous, Game game) {
+    public static GameState emptyGameFromId(String id, String ownerId) {
+        return new GameState(id, ownerId);
+    }
+
+    private GameState(GameState previous, Game game) {
         this.id = previous.getId();
         this.ownerId = previous.getOwnerId();
         this.competitorId = previous.getCompetitorId();
         this.gameSettings = game.getGameSettings();
-        this.ownerGame = new CompressedUserGame(game.getOwner());
-        this.competitorGame = new CompressedUserGame(game.getCompetitor());
+        this.ownerGame = CompressedUserGame.fromUserGame(game.getOwner());
+        this.competitorGame = CompressedUserGame.fromUserGame(game.getCompetitor());
         this.movesCounter = game.getMovesCounter();
     }
 
-    public GameState(String id, String ownerId) {
+    private GameState(String id, String ownerId) {
         this.id = id;
         this.ownerId = ownerId;
         this.movesCounter = 0;

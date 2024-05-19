@@ -43,7 +43,7 @@ public class StartGameController {
 
         this.userToGameRepository.save(new UserToGame(ownerId, gameId));
 
-        GameState initialState = new GameState(gameId, ownerId);
+        GameState initialState = GameState.emptyGameFromId(gameId, ownerId);
         this.gameRepository.save(initialState);
 
         return new CredentialDTO(ownerId, gameId);
