@@ -2,9 +2,9 @@ FROM oraclelinux:9 as build
 LABEL authors="Tomiyoshi Hitaki"
 WORKDIR /workspace/app
 COPY ./ .
-RUN  dnf module enable nodejs:20 -y && \
+RUN  dnf module enable nodejs:22 -y && \
      dnf update -y && \
-     dnf install -y java-21-openjdk-devel nodejs
+     dnf install -y java-21-openjdk-devel nodejs npm
 RUN  ls -al && \
      cd app  && \
      npm install && \
