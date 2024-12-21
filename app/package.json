@@ -17,7 +17,7 @@
     "qrcode.react": "^4.2.0"
   },
   "scripts": {
-    "watch": "npx webpack --watch",
+    "watch": "npx webpack --watch --mode=development --devtool=inline-source-map",
     "build": "npx webpack && node -e \"require('fs').cpSync('./src/index.html', '../src/main/resources/templates/index.html', {recursive: true, force: true});\""
   },
   "eslintConfig": {

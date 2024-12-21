@@ -131,23 +131,25 @@ export class WSService implements IWSService {
     }
 
     public subscribeToNotification(id: string, type: NOTIFICATION_TYPES, callback: NotificationFn) {
-        this.notificationSubscribers[type.valueOf()][id] = callback;
+        console.log(type)
+        this.notificationSubscribers[type][id] = callback;
     }
 
     public unsubscribeFromNotification(id: string, type: NOTIFICATION_TYPES) {
-        delete this.notificationSubscribers[type.valueOf()][id];
+        delete this.notificationSubscribers[type][id];
     }
 
     public subscribeToGame(id: string, type: SocketTypes, callback: GameFn) {
-        this.gameSubscribers[type.valueOf()][id] = callback;
+        this.gameSubscribers[type][id] = callback;
     }
 
     public unsubscribeFromGame(id: string, type: SocketTypes) {
-        delete this.gameSubscribers[type.valueOf()][id];
+        delete this.gameSubscribers[type][id];
     }
 
     onNotification(message: Message) {
         const notification: CompetitorNotificationDTO = JSONToCompetitorNotificationDTO(message.body);
+        console.log(notification)
         for (const subs of Object.values(this.notificationSubscribers[notification.type])) {
             subs(notification.message, notification.payload);
         }

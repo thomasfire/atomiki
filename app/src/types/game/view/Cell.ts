@@ -1,6 +1,6 @@
 import {Vector} from "../../transport/Vector";
 
-export enum CellType {
+export const enum CellType {
     VOID,
     ATOM,
     STREAM,

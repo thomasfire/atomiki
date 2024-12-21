@@ -1,5 +1,5 @@
 
-export enum ENotificationLevel {
+export const enum ENotificationLevel {
     INFO,
     WARNING,
     ERROR

@@ -1,4 +1,4 @@
-export enum EPage {
+export const enum EPage {
     IndexPage,
     SettingsPage,
     WaitCompetitorPage,

@@ -5,7 +5,7 @@ import {Dispatch} from "@reduxjs/toolkit";
 import {emitNotification} from "../store/notificationSlice";
 import {ENotificationLevel} from "../types/game/ENotificationLevel";
 
-enum CopyState {
+const enum CopyState {
     UNKNOWN = "bg-white hover:bg-gray-100",
     ERROR = "bg-rose-300 hover:bg-rose-100",
     OK = "bg-emerald-300 hover:bg-emerald-100"
