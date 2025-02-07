@@ -10,7 +10,8 @@ RUN  ls -al && \
      npm install && \
      npm run build && \
      cd .. && \
-     sh mvnw -B package --file pom.xml
+     chmod +x mvnw && \
+     ./mvnw -B package --file pom.xml
 
 
 FROM oraclelinux:9 as run
