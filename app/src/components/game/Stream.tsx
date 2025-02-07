@@ -15,7 +15,7 @@ const color_picker = (cell: Cell): string => {
     } else if (cell.marked) {
         return "bg-blue-500 disabled:bg-blue-300 rounded-full"
     }
-    return "bg-white disabled:bg-gray-100 rounded"
+    return "bg-white disabled:bg-gray-100 rounded-sm"
 }
 
 export function Stream(cell: Cell) {

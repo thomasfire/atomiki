@@ -20,6 +20,6 @@ cd app
 npm install
 npm run build
 cd ..
-sh mvnw -B package --file pom.xml
-sh mvnw spring-boot:run
+./mvnw -B package --file pom.xml
+./mvnw spring-boot:run
 ```

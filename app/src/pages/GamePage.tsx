@@ -38,7 +38,7 @@ export function GamePage() {
                     (!gameStarted || !gameFinished) &&
                     <div className="row-start-4 self-center w-full flex content-center justify-center align-middle">
                         <button
-                            className="py-3 rounded h-min self-center bg-rose-500 hover:bg-rose-700 w-full m-2 disabled:bg-rose-300"
+                            className="py-3 rounded-sm h-min self-center bg-rose-500 hover:bg-rose-700 w-full m-2 disabled:bg-rose-300"
                             onClick={() => gameStarted ? onFinishGame() : onStartGame()}
                             disabled={(gameStarted && !isOtherStarted) || gameFinished}
                         >

@@ -31,7 +31,7 @@ export function WaitCompetitorPage() {
                 </div>
                 <input type="text" readOnly={true}
                        className={`py-2 px-4 rounded h-min self-center m-1 col-start-1 row-start-3 border-gray-200
-                       border-solid border-2 focus-visible:border-gray-300 focus:border-gray-300 focus-visible:outline-none `}
+                       border-solid border-2 focus-visible:border-gray-300 focus:border-gray-300 focus-visible:outline-hidden `}
                        value={withUrl || "Loading credentials..."}/>
                 <CopyButton value={withUrl || ""} classes={"row-start-3"}/>
                 <div className="bg-white col-start-1 row-start-4 text-gray-800
