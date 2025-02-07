@@ -9,7 +9,7 @@ export function Logs() {
         <textarea readOnly={true} className="h-full w-full
                         border-gray-200
                        border-solid border-2 focus-visible:border-gray-300
-                       focus:border-gray-300 focus-visible:outline-none" value={field ? logs.logEntries.map(((item: LogEntry) => {
+                       focus:border-gray-300 focus-visible:outline-hidden" value={field ? logs.logEntries.map(((item: LogEntry) => {
             return `${field.cells[item.startPoint.x][item.startPoint.y].circleNo?.toString()} - ${item.endPoint && field.cells[item.endPoint.x][item.endPoint.y].circleNo?.toString()}`
         })).join("\n") : ""}/>
     );

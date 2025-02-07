@@ -25,7 +25,7 @@ export function Winner() {
     }
 
     return signage ? (
-        <div className={`${background} py-2 px-2 rounded h-min self-center m-2 text-white`}>
+        <div className={`${background} py-2 px-2 rounded-sm h-min self-center m-2 text-white`}>
             Winner: <span className="text-white font-bold">{signage}</span>
         </div>
     ) : <></>;
