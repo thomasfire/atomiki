@@ -10,7 +10,7 @@ The code there... well, I’ve come a long way since then, but it still works pe
 
 ## Build and run
 
-Install JDK 21 and NodeJS 20 on your preferred platform and then:
+Install JDK 21 and NodeJS 22 on your preferred platform and then:
 
 ```shell
 git clone https://github.com/thomasfire/atomiki.git
