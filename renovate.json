@@ -6,7 +6,7 @@
   "packageRules": [
     {
       "matchFileNames": [
-        "src/test/js/**/*"
+        "src/test/js/package.json"
       ],
       "extends": [
         "config:recommended"
