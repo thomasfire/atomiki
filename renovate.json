@@ -5,8 +5,12 @@
   ],
   "packageRules": [
     {
-      "paths": ["src/test/js"],
-      "extends": ["config:base"]
+      "matchFileNames": [
+        "src/test/js"
+      ],
+      "extends": [
+        "config:recommended"
+      ]
     }
   ]
 }
