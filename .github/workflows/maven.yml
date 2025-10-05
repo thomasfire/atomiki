@@ -21,7 +21,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: actions-setup-redis
-      uses: shogo82148/actions-setup-redis@v1.42.0
+      uses: shogo82148/actions-setup-redis@v1.42.1
       with:
         redis-port: 6379
     - name: Use Node.js 20.x
