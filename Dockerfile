@@ -1,4 +1,4 @@
-FROM oraclelinux:9 as build
+FROM oraclelinux:10 as build
 LABEL authors="Tomiyoshi Hitaki"
 WORKDIR /workspace/app
 COPY ./ .
@@ -14,7 +14,7 @@ RUN  ls -al && \
      ./mvnw -B package --file pom.xml
 
 
-FROM oraclelinux:9 as run
+FROM oraclelinux:10 as run
 COPY --from=build /workspace/app/target/*.jar app.jar
 # Install Redis
 RUN dnf install -y redis java-21-openjdk
